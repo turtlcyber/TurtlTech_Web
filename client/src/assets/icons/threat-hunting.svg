@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="88" height="88" viewBox="0 0 88 88">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.177" y1="1.06" x2="0.823" y2="-0.06" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#0014ff"/>
+      <stop offset="0.363" stop-color="#006dfd"/>
+      <stop offset="0.629" stop-color="#00a7fc"/>
+      <stop offset="1" stop-color="#00d6ff"/>
+    </linearGradient>
+    <filter id="Rectangle_2300-2" x="0" y="0" width="88" height="88" filterUnits="userSpaceOnUse">
+      <feOffset dy="8" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#0065ff" flood-opacity="0.149"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_7343" data-name="Rectangle 7343" width="40" height="40" transform="translate(-0.146 -0.146)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Group_4285" data-name="Group 4285" transform="translate(-171.409 -1607.809)">
+    <g id="Group_19072" data-name="Group 19072">
+      <g transform="matrix(1, 0, 0, 1, 171.41, 1607.81)" filter="url(#Rectangle_2300-2)">
+        <rect id="Rectangle_2300-2-2" data-name="Rectangle 2300-2" width="64" height="64" rx="16" transform="translate(12 4)" fill="url(#linear-gradient)"/>
+      </g>
+    </g>
+    <g id="Group_22685" data-name="Group 22685" transform="translate(205.555 1634.454)">
+      <g id="Group_22684" data-name="Group 22684" transform="translate(-10 -10)" clip-path="url(#clip-path)">
+        <rect id="Rectangle_7342" data-name="Rectangle 7342" width="34" height="28" rx="2" transform="translate(2.854 5.854)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Line_3026" data-name="Line 3026" x2="7" transform="translate(17.854 21.854)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Path_14600" data-name="Path 14600" d="M6,8l3.354,3.354L6,14.709" transform="translate(3.791 5.145)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>
