@@ -3,7 +3,7 @@ import React from "react";
 export const Header = () => {
    return (
       <React.Fragment>
-         <header className="bg-light border-bottom position-fixed top-0 start-0 end-0" style={{zIndex:1000}}>
+         <header className="bg-light border-bottom position-fixed start-0 end-0">
             <nav className="navbar navbar-expand-lg bg-body-tertiary">
                <div className="container-fluid">
                   <a className="navbar-brand">Turtl Cyber Security</a>

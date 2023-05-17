@@ -125,8 +125,8 @@ const BlogPreview = () => {
                                        <img
                                           class="featured-img"
                                           loading="lazy"
-                                          src={`http://${ipAddress}:${port}${blog.coverImg}`}
-                                          alt="Featured Image"
+                                          src={blog.coverImg.imageUrl}
+                                          alt={blog.coverImg.altText}
                                        />
                                     }
                                  </div>

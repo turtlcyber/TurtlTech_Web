@@ -94,8 +94,8 @@ const Blog = () => {
                               width:400,
                               height:280
                             }}
-                            src={`http://${ipAddress}:${port}/${el.coverImg}`}
-                            alt=""
+                            src={el.coverImg.imageUrl}
+                            alt={el.coverImg.altText}
                           />
                           <span className="post-date">
                             {/* <span className="day">05 </span>April 2023{" "} */}

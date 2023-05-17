@@ -56,3 +56,14 @@ export const userClear = () => {
       type: ActionType.USER_CLEAR,
    }
 }
+
+export const filemanagerOpen = () => {
+   return {
+      type: ActionType.ADMIN_FILEMANAGER_OPEN,
+   }
+}
+export const filemanagerClose = () => {
+   return {
+      type: ActionType.ADMIN_FILEMANAGER_CLOSE,
+   }
+}

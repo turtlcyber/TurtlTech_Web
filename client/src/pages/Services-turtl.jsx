@@ -33,9 +33,7 @@ const ServicesDetails = () => {
   }, [allServices]);
   return (
     <div>
-      <Helmet>
-        <title>Services</title>
-      </Helmet>
+      
       <div class="container mt-5" id="" style={{ display: "none" }}>
         <div class="row">
           <div class="col-md-6 offset-md-3 border p-4 shadow bg-light">

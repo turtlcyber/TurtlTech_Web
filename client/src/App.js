@@ -11,32 +11,23 @@ import LoginForm from './components/LoginForm';
 import { useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { userFetch } from './redux/R_Action';
+import {gapi} from 'gapi-script'
 function App() {
   const state = useSelector(state => state);
   const dispatch = useDispatch();
+  let clientId = "1071769691163-9qm1qs54a9vu2hst6muc7uinvvradtp0.apps.googleusercontent.com";
   console.log(state);
 
-  const handleCallbackResponse = (response) => {
-    console.log('Encoded JWT ID token: ', response.credential);
-    var userObject = jwtDecode(response.credential);
-    dispatch(userFetch(userObject));
-    console.log(userObject);
-  }
+
 
   useEffect(() => {
-    // global google
-    google.accounts.id.initialize({
-      client_id:'1071769691163-9qm1qs54a9vu2hst6muc7uinvvradtp0.apps.googleusercontent.com',
-      callback:handleCallbackResponse
-    })
-
-    google.accounts.id.renderButton(
-      document.getElementById('signInDiv'),
-      {
-        theme:'outline',
-        size:'large'
-      }
-    )
+    function start(){
+      gapi.client.init({
+        clientId:clientId,
+        scope:''
+      })
+    };
+    gapi.load('client:auth2', start);
   },[])
 
   return (
@@ -47,8 +38,7 @@ function App() {
       <AdminRoute/>
       <Header/>
       <Helmet>
-        <title>Turtl Cyber </title>
-        <meta name='Cyber Security'  />
+        <title>Turtl Cyber</title>
       </Helmet>
       <MainRoute/>
       <Footer/>

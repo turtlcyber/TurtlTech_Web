@@ -9,6 +9,7 @@ import TalkToSales from '../pages/TalkToSales';
 import AskHr from '../pages/AskHr';
 import ServicesDetails from '../pages/Services-turtl';
 import BlogPreview from '../pages/BlogPreview';
+import FAQ from '../pages/FAQ';
 
 
 const MainRoute = () => {
@@ -22,6 +23,7 @@ const MainRoute = () => {
             <Route path="/blog/:slug" element={<BlogPreview/>} />
             <Route path="/contact" element={<Contact/>} />
            <Route path="/sales" element={<TalkToSales/>}/>
+           <Route path="/faq" element={<FAQ/>}/>
            <Route path="/services/:id" element={<ServicesDetails/>}/>
         </Routes>
     </div>

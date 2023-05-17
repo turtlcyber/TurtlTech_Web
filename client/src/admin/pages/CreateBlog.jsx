@@ -8,11 +8,10 @@ import "react-quill/dist/quill.snow.css";
 import Parser from "html-react-parser";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { blogEditFn, blogModelOpenFn } from "../../redux/R_Action";
+import { blogEditFn, blogModelOpenFn, filemanagerOpen } from "../../redux/R_Action";
 import { blogPost } from "../../apis/Apis";
 const initial = {
    blogTitle: "",
-   coverImg: "",
    tags: "",
    description: "",
    sections: [],
@@ -21,6 +20,12 @@ const initial = {
 const CreateBlog = () => {
    const handle = useFullScreenHandle();
    const [editorKey, setEditorKey] = React.useState(4);
+   const [isImageUrlBoxOpen, setIsImageBoxOpen] = useState(false);
+   const [coverImage, setCoverImage] = useState({
+      url:'',
+      alt:'',
+      isPreview:false
+   })
    const [value, setValue] = useState("");
    const [editBlog, setEditBlog] = useState({ idx: null, data: "" });
    const [tempImg, setTempImg] = useState();
@@ -38,9 +43,9 @@ const CreateBlog = () => {
       if (editorRef.current) {
          let arr = blogData.sections;
          let obj = {
-            content:editorRef.current.getContent(),
-         }
-         if(tempImg){
+            content: editorRef.current.getContent(),
+         };
+         if (tempImg) {
             obj.img = tempImg;
          }
          arr.push(obj);
@@ -51,7 +56,6 @@ const CreateBlog = () => {
          clearEditor();
          console.log(editorRef.current.getContent());
       }
-
    };
 
    const updateSection = (el, idx) => {
@@ -62,36 +66,51 @@ const CreateBlog = () => {
       console.log(el);
       // console.log(idx);
    };
-
-
+   const coverHandler = () => {
+      setIsImageBoxOpen(false);
+      if(coverImage.url === ''){
+      setCoverImage(old => {return {...old, isPreview:false}})
+      }else{
+         setCoverImage(old => {return {...old, isPreview:true}})
+      }
+      
+   }
    const saveBlog = async () => {
       const form = new FormData();
-      form.append('blogTitle', blogData.blogTitle);
-      form.append('description', blogData.description);
-      form.append('coverImg', blogData.coverImg, blogData.coverImg.name);
+      form.append("blogTitle", blogData.blogTitle);
+      form.append("description", blogData.description);
+      form.append("coverImgUrl", coverImage.url);
+      form.append("coverImgAlt", coverImage.alt);
       let arr = [];
-      for(let i=0; i<blogData.sections.length; i++){
-         let {content} = blogData.sections[i];
+      for (let i = 0; i < blogData.sections.length; i++) {
+         let { content } = blogData.sections[i];
          console.log(content);
          arr.push(content);
          // form.append('sections', toString(content));
-         if(blogData.sections[i].img){
-            form.append(`secImg_${i}`, blogData.sections[i].img, blogData.sections[i].img.name);
+         if (blogData.sections[i].img) {
+            form.append(
+               `secImg_${i}`,
+               blogData.sections[i].img,
+               blogData.sections[i].img.name
+            );
          }
       }
 
-      
-      form.append('tags', blogData.tags);
-      form.append('sections', JSON.stringify(arr));
+      form.append("tags", blogData.tags);
+      form.append("sections", JSON.stringify(arr));
       console.log(JSON.stringify(arr));
       console.log(blogData);
-      console.log(form.getAll('sections'));
-      await blogPost(form).then(res => {
-         console.log(res.data);
-      }).catch(err => {
-         console.log(err);
-      })
-   }
+      console.log(coverImage.url);
+      console.log(form.getAll('coverImgUrl'));
+
+      await blogPost(form)
+         .then((res) => {
+            console.log(res.data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
 
    return (
       <React.Fragment>
@@ -127,6 +146,13 @@ const CreateBlog = () => {
                         role="group"
                         aria-label="Basic mixed styles example"
                      >
+                     <button
+                           type="button"
+                           className="btn btn-light border fw-bold"
+                           onClick={() => dispatch(filemanagerOpen())}
+                        >
+                           &nbsp; File Manager &nbsp;
+                        </button>
                         <button
                            type="button"
                            className="btn btn-danger fw-bold"
@@ -156,31 +182,48 @@ const CreateBlog = () => {
                      style={{ maxWidth: 1100, width: 1100, minHeight: 500 }}
                   >
                      <div className="p-4 align-items-start d-flex flex-column">
-                        <div class="mb-3">
-                           <input
-                              type="file"
-                              class="d-none"
-                              id="inputGroupFile02"
-                              onChange={(e) =>
-                                 setBlogData((el) => {
-                                    return {
-                                       ...el,
-                                       coverImg: e.target.files[0],
-                                    };
-                                 })
-                              }
-                           />
-                           <label
-                              class="btn btn-outline-secondary"
-                              for="inputGroupFile02"
+                        <div class="mb-3" style={{ position: "relative" }}>
+                           <button className="btn btn-outline-primary" onClick={() => setIsImageBoxOpen(true)}>
+                              {coverImage.isPreview ? 'Change Cover Image':'Add Cover'}
+                           </button>
+                           <div
+                              className="  rounded p-2"
+                              style={{
+                                 position: "absolute",
+                                 top: 0,
+                                 display: isImageUrlBoxOpen ? 'block' :'none',
+                                 width: "500px",
+                                 backgroundColor:'#6ee875'
+                              }}
                            >
-                              {blogData.coverImg
-                                 ? "Replace Cover"
-                                 : "Add a cover image"}
-                           </label>
+                              <div class="input-group mb-3">
+                              <span class="input-group-text" style={{width:'90px'}}>Image Url</span>
+                                 <input
+                                    type="url"
+                                    aria-label="Image url"
+                                    class="form-control"
+                                    value={coverImage.url}
+                                    onChange={(e) => setCoverImage(old => {return {...old, url:e.target.value}})}
+                                 />
+                              </div>
+                              <div class="input-group">
+                                 <span class="input-group-text"  style={{width:'90px'}}>Alt Text</span>
+                                 <input
+                                    type="text"
+                                    aria-label="alt text"
+                                    class="form-control"
+                                    value={coverImage.alt}
+                                    onChange={(e) => setCoverImage(old => {return {...old, alt:e.target.value}})}
+                                 />
+                              </div>
+                              <div className="d-flex justify-content-center">
+                              <button className="mt-3 btn btn-primary mx-1" onClick={() => coverHandler()}>Save</button>
+                              <button className="mt-3 btn btn-warning mx-1" onClick={() => setIsImageBoxOpen(false)}>Close</button>
+                              </div>
+                           </div>
                         </div>
-                        {blogData.coverImg && (
-                           <img src={URL.createObjectURL(blogData.coverImg)} />
+                        {coverImage.isPreview && (
+                           <img src={coverImage.url} alt={coverImage.alt} />
                         )}
                         <textarea
                            placeholder="New post title here..."
@@ -209,9 +252,11 @@ const CreateBlog = () => {
                               border: "none",
                            }}
                            placeholder="Add multiple tags and tags start with # sign"
-                           onChange={(e) => setBlogData(data => {
-                              return {...data, tags:e.target.value}
-                           })}
+                           onChange={(e) =>
+                              setBlogData((data) => {
+                                 return { ...data, tags: e.target.value };
+                              })
+                           }
                         ></textarea>
                         <textarea
                            rows={3}
@@ -244,7 +289,9 @@ const CreateBlog = () => {
                                     Edit
                                  </button>
                                  {Parser(el.content)}
-                                 {el.img && <img src={URL.createObjectURL(el.img)}/>}
+                                 {el.img && (
+                                    <img src={URL.createObjectURL(el.img)} />
+                                 )}
                               </>
                            ))}
                         </div>
@@ -273,9 +320,11 @@ const CreateBlog = () => {
                               width: "100%",
                               zIndex: 2000,
                               plugins:
-                                 "codesample code lists image preview link",
+                                 "codesample code lists image preview link editimage",
                               automatic_uploads: true,
                               menubar: false,
+                              images_file_types: "jpg,svg,webp",
+                              file_picker_types: "image",
                               codesample_languages: [
                                  { text: "JavaScript", value: "javascript" },
                                  { text: "HTML/XML", value: "markup" },
@@ -289,15 +338,13 @@ const CreateBlog = () => {
                                  { text: "C++", value: "cpp" },
                               ],
                               toolbar:
-                                 "undo redo styles bold italic alignleft aligncenter alignright superscript subscript numlist bullist codesample code | blockquote link",
+                                 "undo insertfile redo styles bold italic image alignleft aligncenter alignright superscript subscript numlist bullist codesample code | blockquote link",
                               content_style:
                                  "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
                            }}
                         />
 
-                        {tempImg && (
-                           <img src={URL.createObjectURL(tempImg)} />
-                        )}
+                        {tempImg && <img src={URL.createObjectURL(tempImg)} />}
 
                         <div class="mb-3">
                            <input

@@ -74,3 +74,13 @@ export const userAuthObj = (state=userInfo, action) => {
       default: return userInfo;
    }
 }
+
+export const fileManagerOpenClose = (state=false, action) => {
+   switch(action.type){
+      case ActionType.ADMIN_FILEMANAGER_OPEN :
+         return true;
+      case ActionType.ADMIN_FILEMANAGER_CLOSE :
+         return false;
+      default: return false;
+   }
+}

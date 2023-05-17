@@ -7,9 +7,11 @@ import darkLogo from "../assets/img/logowhite.png";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFormFnOpen } from "../redux/R_Action";
+import {GoogleLogout} from "react-google-login";
 
 const Header = () => {
   const [color, setColor] = useState(false);
+  let clientId = "1071769691163-9qm1qs54a9vu2hst6muc7uinvvradtp0.apps.googleusercontent.com";
   const location = useLocation();
   const dispatch = useDispatch();
   const {userAuthObj} = useSelector(state => state);
@@ -43,6 +45,10 @@ const Header = () => {
       color: "white",
     },
   };
+
+  const onSuccess = () => {
+    console.log("Logout successfull");
+  }
 
   
   return (
@@ -146,6 +152,18 @@ const Header = () => {
                   contact us
                 </Link>
               </li>
+              <li className="menu-item">
+                <Link
+                  className={
+                    location.pathname === "/faq"
+                      ? "menu-link active"
+                      : "menu-link"
+                  }
+                  to="faq"
+                >
+                  FAQ
+                </Link>
+              </li>
               <li className="menu-item has-sub-menu">
                 <Link
                   className={
@@ -170,7 +188,11 @@ const Header = () => {
                      </div>
                      <hr className="my-1"/>
                      <div className="p-2 usermenu">
-                      <span>Sign Out</span>
+                      <GoogleLogout
+                      clientId={clientId}
+                      buttonText="Logout"
+                      onLogoutSuccess={onSuccess}
+                      />
                      </div>
                   </div>
               </div>
