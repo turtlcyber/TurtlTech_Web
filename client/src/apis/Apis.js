@@ -95,6 +95,12 @@ export const getSeoByPageName = (pageName) => {
       url: `http://${ipAddress}:${port}/turtlseo/${pageName}`,
   })
 }
+export const getAllFaqApi = () => {
+   return axios({
+      method: 'GET',
+      url: `http://${ipAddress}:${port}/turtlfaqs`,
+  })
+}
 export const saveCompanyInfoApi = (data) => {
    return axios({
       method: 'POST',
@@ -117,3 +123,20 @@ export const saveTurtlSeoDataApi = (data) => {
       data:data,
   })
 }
+
+export const saveFaqApi = (data) => {
+   return axios({
+      method: 'POST',
+      url: `http://${ipAddress}:${port}/turtlfaq`,
+      data:data,
+  })
+}
+
+export const updateFaqApi = (data, id) => {
+   return axios({
+      method: 'PUT',
+      url: `http://${ipAddress}:${port}/turtlfaq/${id}`,
+      data:data,
+  })
+}
+

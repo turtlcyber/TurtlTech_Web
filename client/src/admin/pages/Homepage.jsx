@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { filemanagerOpen } from "../../redux/R_Action";
 import Tab from "react-bootstrap/Tab";
@@ -7,15 +7,19 @@ import { CgPlayListAdd } from "react-icons/cg";
 import { FcOpenedFolder } from "react-icons/fc";
 import axios from "axios";
 import {
+   getAllFaqApi,
    saveCertificatelApi,
    saveEventsApi,
+   saveFaqApi,
    savePageImageApi,
    saveTestimonialApi,
+   updateFaqApi,
 } from "../../apis/Apis";
 const Homepage = () => {
    const dispatch = useDispatch();
    const { fileManagerOpenClose } = useSelector((state) => state);
    const [listOfCertificate, setListOfCertificate] = useState([]);
+   const [isEditedFaq, setIsEditedFaq] = useState({id:'', flag:false});
    const [coverImage, setCoverImage] = useState({
       image: "",
       altText: "",
@@ -37,6 +41,12 @@ const Homepage = () => {
       designation: "",
       rating: "",
       story: "",
+   });
+   const [listOfFaq, setListOfFaq] = useState([]);
+   const [newFaqData, setNewFaqData] = useState({
+      category: "",
+      question: "",
+      answer: "",
    });
 
    const addHandler = (enms) => {
@@ -166,6 +176,63 @@ const Homepage = () => {
             });
       }
    };
+
+   const getAllFaqs = async() => {
+     await  getAllFaqApi()
+         .then((res) => {
+            console.log(res.data);
+            setListOfFaq(res.data.data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
+   const saveToDatabase = async () => {
+      if(isEditedFaq.flag){
+         updateFaqApi(newFaqData, isEditedFaq.id).then(res => {
+            console.log(res.data);
+            alert('Faq Updated successfully');
+            clearFaqEditing();
+         }).catch(err => {
+            console.log(err);
+            alert('Something went wrong if updating faq data');
+         })
+      }else{
+
+         saveFaqApi(newFaqData)
+         .then((res) => {
+            alert("FAQ Added successfully to database");
+            setNewFaqData({
+               category: "",
+               question: "",
+               answer: "",
+            });
+            getAllFaqs();
+         })
+         .catch((err) => {
+            console.log(err);
+            alert("Something Weng Wrong");
+         });
+      }
+      // console.log(newFaqData);
+   };
+   const clearFaqEditing = () => {
+      setIsEditedFaq({id:'', flag:false});
+      setNewFaqData({
+         category: "",
+         question: "",
+         answer: "",
+      });
+   }
+   const editFaq = (objId) => {
+      setIsEditedFaq({id:objId, flag:true});
+      let a = listOfFaq.find(o => o._id === objId);
+      console.log(a);
+      setNewFaqData(a);
+   }
+   useEffect(() => {
+      getAllFaqs();
+   }, []);
 
    return (
       <div>
@@ -588,12 +655,8 @@ const Homepage = () => {
                   </div>
                </div>
             </Tab>
-            <Tab
-               className="portfolio-btn"
-               eventKey="SERVICES"
-               title="SERVICES"
-            >
-                <div className="row mt-5">
+            <Tab className="portfolio-btn" eventKey="SERVICES" title="SERVICES">
+               <div className="row mt-5">
                   <div className="col-7">
                      <div class="input-group mb-3">
                         <span
@@ -652,7 +715,7 @@ const Homepage = () => {
                </div>
             </Tab>
             <Tab className="portfolio-btn" eventKey="BLOG" title="BLOG">
-            <div className="row mt-5">
+               <div className="row mt-5">
                   <div className="col-7">
                      <div class="input-group mb-3">
                         <span
@@ -710,11 +773,7 @@ const Homepage = () => {
                   </div>
                </div>
             </Tab>
-            <Tab
-               className="portfolio-btn"
-               eventKey="CONTACT"
-               title="CONTACT"
-            >
+            <Tab className="portfolio-btn" eventKey="CONTACT" title="CONTACT">
                <div className="row mt-5">
                   <div className="col-7">
                      <div class="input-group mb-3">
@@ -773,13 +832,9 @@ const Homepage = () => {
                   </div>
                </div>
             </Tab>
-            <Tab
-               className="portfolio-btn"
-               eventKey="FAQ"
-               title="FAQ"
-            >
+            <Tab className="portfolio-btn" eventKey="FAQ" title="FAQ">
                <div className="row mt-5">
-                  <div className="col-7">
+                  <div className="col-5 border-end">
                      <div class="input-group mb-3">
                         <span
                            class="input-group-text"
@@ -832,6 +887,103 @@ const Homepage = () => {
                         >
                            Save To Database
                         </button>
+                     </div>
+                     <hr className="my-5" />
+                     {
+                        isEditedFaq.flag &&
+                     <div className="d-flex justify-content-start mb-2" style={{height:'38px'}}>
+                     <h3 className="my-0"><span class="badge bg-black">Editing</span></h3>
+                     <button type="button" class="btn btn-primary ms-2" onClick={() => clearFaqEditing()}>Cancel</button>
+                     </div>
+                     }
+                     <select
+                        class="form-select mb-3"
+                        aria-label="Default select example"
+                        value="FAQ"
+                        value={newFaqData.category}
+                        onChange={(e) =>
+                           setNewFaqData((old) => {
+                              return { ...old, category: e.target.value };
+                           })
+                        }
+                     >
+                        <option value="">Select Category</option>
+                        <option value="BASICS">Basics</option>
+                        <option value="CYBER_SECURITY">Cyber Security</option>
+                        <option value="WEB_DEVELOPMENT">Web Development</option>
+                        <option value="APP_DEVELOPMENT">App Development</option>
+                        <option value="GAME">Game</option>
+                        <option value="BILLING_SOFTWARE">
+                           Billing Software
+                        </option>
+                        <option value="PAYMENT">Payment</option>
+                     </select>
+                     <div class="input-group flex-nowrap mb-3">
+                        <span class="input-group-text" id="addon-wrapping">
+                           Title
+                        </span>
+                        <input
+                           type="text"
+                           class="form-control"
+                           placeholder="Question"
+                           aria-label="question"
+                           aria-describedby="addon-wrapping"
+                           value={newFaqData.question}
+                           onChange={(e) =>
+                              setNewFaqData((old) => {
+                                 return { ...old, question: e.target.value };
+                              })
+                           }
+                        />
+                     </div>
+                     <textarea
+                        className="form-control mb-3"
+                        placeholder="Add you answer hear"
+                        value={newFaqData.answer}
+                        onChange={(e) =>
+                           setNewFaqData((old) => {
+                              return { ...old, answer: e.target.value };
+                           })
+                        }
+                     ></textarea>
+
+                     <button
+                        className={isEditedFaq.flag ? "btn btn-warning" : 'btn btn-primary'}
+                        onClick={() => saveToDatabase()}
+                     >
+                        {isEditedFaq.flag ? 'Update Edited' : 'Save To Database'}
+                     </button>
+                  </div>
+                  <div className="col-7 text-start">
+                     <div class="accordion" id="accordionFaq">
+                        {listOfFaq.map((el, i) => (
+                           <div class="accordion-item">
+                              <h2 class="accordion-header">
+                                 <button
+                                    class="accordion-button collapsed"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target={`#collaps_${el._id}`}
+                                    aria-expanded="false"
+                                    aria-controls={`collaps_${el._id}`}
+                                 >
+                                    {el.question}
+                                    <span class="badge bg-secondary fw-light ms-3" style={{fontSize:"16px"}}>{(el.category).replace('_'," ")}</span>
+                                 </button>
+                              </h2>
+                              <div
+                                 id={`collaps_${el._id}`}
+                                 class="accordion-collapse collapse"
+                                 data-bs-parent="#accordionFaq"
+                              >
+                                 <div class="accordion-body">
+                                    {el.answer}
+                                    <br/>
+                                    <button className="btn btn-danger mt-2" onClick={() => editFaq(el._id)}>Edit</button>
+                                 </div>
+                              </div>
+                           </div>
+                        ))}
                      </div>
                   </div>
                </div>
