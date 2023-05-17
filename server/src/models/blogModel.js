@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const slugify = require('slugify');
+const slugify = require("slugify");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const blogSchema = new mongoose.Schema(
@@ -23,7 +23,11 @@ const blogSchema = new mongoose.Schema(
     },
 
     coverImg: {
-      type: String,
+      imageUrl: {
+        type: String,
+      },
+      
+      altText: { type: String },
     },
 
     markdown: {
@@ -33,7 +37,7 @@ const blogSchema = new mongoose.Schema(
     slug: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
 
     description: {
@@ -89,14 +93,14 @@ const blogSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-blogSchema.pre('validate', function(next){
+blogSchema.pre("validate", function (next) {
   if (this.blogTitle) {
     let blog = this.blogTitle + " " + this.blogUID;
-    this.slug = slugify(blog, { lower: true, strict: true })
+    this.slug = slugify(blog, { lower: true, strict: true });
   }
 
   next();
-})
+});
 
 module.exports = mongoose.model("Blog", blogSchema);
 

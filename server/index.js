@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const route = require("./src/routes/routes.js");
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
+const passport = require('passport');
+
 
 
 const app = express();
@@ -12,6 +14,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(fileUpload());
 app.use(cors());
+// app.use(passport.initialize());
+// app.use(passport.session());
+
 // app.use(bodyParser.urlencoded({extended: false}));
 app.use("/", express.static('public/uploads'));
 

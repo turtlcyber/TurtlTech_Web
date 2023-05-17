@@ -24,13 +24,14 @@ const createBlog = async (req, res) => {
   try {
 
     let data = req.body;
-    let file = req.files;
-
+    
     let {
       blogTitle,
       tags,
       description,
-      sections
+      sections,
+      coverImgUrl,
+      coverImgAlt
     } = data;
 
     // console.log('section', sections);
@@ -70,16 +71,30 @@ const createBlog = async (req, res) => {
       secArr.push({content: sec});
     }
 
-    for (let i in file) {
-      // secArr[parseInt(i.split('_')[1])].img = 'hello'
-      // parseInt(i.split('_')[1]) >= 0 ? console.log("idx", parseInt(i.split('_')[1])) : '';
-      parseInt(i.split('_')[1]) >= 0 ? secArr[parseInt(i.split('_')[1])].imgUrl = await imageMV(file[i], 'blogImages') : '';
-    }
+    // for (let i in file) {
+    //   // secArr[parseInt(i.split('_')[1])].img = 'hello'
+    //   // parseInt(i.split('_')[1]) >= 0 ? console.log("idx", parseInt(i.split('_')[1])) : '';
+    //   parseInt(i.split('_')[1]) >= 0 ? secArr[parseInt(i.split('_')[1])].imgUrl = await imageMV(file[i], 'blogImages') : '';
+    // }
     // console.log('hello', secArr);
-    blogData.coverImg = await imageMV(file.coverImg, 'blogImages');
+    // blogData.coverImg = await imageMV(file.coverImg, 'blogImages');
+    // blogData.coverImg.imageUrl = await imageMV(file.coverImg, 'blogImages');
+    // console.log('Hello example', req.body);
+
+    let abc = {
+      imageUrl: coverImgUrl,
+      altText: coverImgAlt ? coverImgAlt : 'turtltech.com'
+    }
+    blogData.coverImg = abc;
+
+   
+    // blogData.coverImg.altText = coverImgAlt ? coverImgAlt : 'turtltech.com';
+
     blogData.sections = secArr;
+
     
     let blog = await blogModel.create(blogData);
+    // console.log("Testing", blogData);
 
     return res.status(201).send({
       status: true,
@@ -230,7 +245,7 @@ const deleteBlogById = async (req, res) => {
     let blog = await blogModel.findById(blogId);
 
     if (!blog) {
-      return res.status(404).send({ status: false, message: 'No blog found with thid blog id'})
+      return res.status(404).send({ status: false, message: 'No blog found with this blog id'})
     }
 
     // console.log( 'coverImg', blog.sections );

@@ -1,34 +1,19 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-const imageSchema = new mongoose.Schema({
-    images: {
-        type: String
+const imageSchema = new mongoose.Schema(
+  {
+    imageUrl: {
+      type: String,
+      required: true,
     },
 
-    // image2: {
-    //     type: String
-    // },
-
-    // image3: {
-    //     type: String
-    // },
-
-    // image4: {
-    //     type: String
-    // }
-
-    img1Url: {
-        type: String
+    imgField: {
+      type: String,
+      enum: ["BLOG", "HOME", "SERVICES", "ABOUT", "CONTACT"],
     },
+  },
+  { timestamps: true }
+);
 
-    img2Url: {
-        type: String
-    },
-
-    img3Url: {
-        type: String
-    }
-}, { timestamps: true });
-
-module.exports = mongoose.model('Image', imageSchema);
+module.exports = mongoose.model("Image", imageSchema);

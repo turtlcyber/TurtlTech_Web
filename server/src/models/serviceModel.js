@@ -3,20 +3,15 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const serviceSchema = new mongoose.Schema({
 
-    content: {
+    title: {
         type: String,
     },
 
-    // ImageFile: {
-    //     type: String
-    // },
-
-    adminId: {
-        type: ObjectId,
-        ref: 'Admin'
+    description: {
+        type: String,
     },
 
-    imageUrl: {
+    imgUrl: {
         type: String,
     }
 
