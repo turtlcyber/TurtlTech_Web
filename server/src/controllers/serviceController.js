@@ -1,7 +1,7 @@
 const serviceModel = require("../models/serviceModel");
 const userModel = require("../models/userModel");
 const adminModel = require("../models/adminModel");
-const { upload } = require("../middlewares/ImageUpload");
+const { imageMV } = require("../middlewares/ImageUpload");
 
 const {
   isValid,
@@ -10,10 +10,10 @@ const {
 } = require("../utils/utils");
 
 // ADD CONTENT
-const addContent = async (req, res) => {
+const addService = async (req, res) => {
   try {
     let data = req.body;
-    let file = req.file;
+    let file = req.files;
 
     // console.log("content:", data.content, "file", file.filename);
 
@@ -28,25 +28,24 @@ const addContent = async (req, res) => {
     //   .send({ status: false, message: 'Please add atleast one file'})
     // }
 
-    let { content, adminId } = data;
+    let { title, description, imgUrl } = data;
 
-    let sectionData = {
-      content,
-      adminId,
+    let serviceData = {
+      title,
+      description,
+      imgUrl
     };
 
-    sectionData.imageUrl = `http://localhost:4001/service/${req.file.filename}`;
-    // sectionData.ImageFile = imageUrl;
+    serviceData.imgUrl = await imageMV(file.imgUrl, "serviceImages");
 
-    let createSection = await (
-      await serviceModel.create(sectionData)
-    ).populate("adminId");
+    let createService = await serviceModel.create(serviceData);
 
     res.status(201).send({
       status: true,
       message: "Service section added",
-      data: createSection,
+      data: createService,
     });
+
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -55,7 +54,7 @@ const addContent = async (req, res) => {
 // GET SERVICES
 const getAllServices = async (req, res) => {
   try {
-    let services = await serviceModel.find().populate("adminId");
+    let services = await serviceModel.find();
 
     if (!services.length) {
       return res
@@ -72,7 +71,7 @@ const getAllServices = async (req, res) => {
 // UPDATE SERVICE SECTION
 const updateServiceSection = async (req, res) => {
   try {
-    let secId = req.params.secId;
+    let serviceId = req.params.serviceId;
 
     if (!isValidObjectId(secId)) {
       return res
@@ -80,7 +79,7 @@ const updateServiceSection = async (req, res) => {
         .send({ status: false, message: "Invalid section Id" });
     }
 
-    let data = await serviceModel.findById(secId);
+    let data = await serviceModel.findById(serviceId);
 
     if (!data) {
       return res
@@ -89,24 +88,27 @@ const updateServiceSection = async (req, res) => {
     }
 
     let reqBody = req.body;
-    let file = req.file;
 
-    let { content, ImageFile } = reqBody;
-    console.log(reqBody);
-    console.log("content: ", content, "file:", ImageFile);
+    let file = req.files;
 
-    if ("content" in reqBody) {
-      data.content = content;
+    let { title, description, imgUrl } = reqBody;
+    
+    if ("title" in reqBody) {
+      data.title = title;
     }
 
-    if (file && file.length > 0) {
-      let url = `http://localhost:4001/service/${req.file.filename}`;
-      data.ImageFile = url;
+    if ("description" in reqBody){
+      data.description = description;
     }
+
+    // if (file && file.length > 0) {
+    //   let url = `http://localhost:4001/service/${req.file.filename}`;
+    //   data.ImageFile = url;
+    // }
 
     await data.save();
 
-    res.status(200).send({ status: true, message: "Section updated" });
+    res.status(200).send({ status: true, message: "Section updated", data: data });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -166,7 +168,7 @@ const deleteServiceSection = async (req, res) => {
 };
 
 module.exports = {
-  addContent,
+  addService,
   getAllServices,
   updateServiceSection,
   deleteServiceSection,

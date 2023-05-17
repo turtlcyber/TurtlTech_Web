@@ -2,10 +2,10 @@ var nodemailer = require("nodemailer");
 
 // create reusable transport method (opens pool of SMTP connections)
 var smtpTransport = nodemailer.createTransport({
-    service: "Gmail",
+    host: 'Gmail',
     auth: {
         user: "sandeep.sid.kumar10@gmail.com",
-        pass: "gosmciadfnayqjfn"
+        pass: "gosmciadfnayqjfn" // gosmciadfnayqjfn // sandeep.sid.kumar10@gmail.com
     }
 });
 
@@ -13,8 +13,8 @@ var smtpTransport = nodemailer.createTransport({
 var mailOptions = {
     from: "sandeep.sid.kumar10@gmail.com", // sender address
     to: "physics19891@gmail.com", // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "This mail is send", // plaintext body
+    subject: "Nodemailer Email", // Subject line
+    text: "Hello, this mail is coming from TurtlTech", // plaintext body
     html: "<b>Hello world ✔</b>" // html body
 }
 

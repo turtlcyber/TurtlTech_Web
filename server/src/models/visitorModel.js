@@ -23,8 +23,10 @@ const visitorSchema = new mongoose.Schema({
         type: String,
     },
 
-    picture: {
-        type: String,
+    image: {
+        imageUrl: { type: String },
+        
+        altText: { type: String },
     }
 });
 

@@ -15,7 +15,53 @@ const addBlogLikesById = async (req, res) => {
 
     let { blogId, visitorId, like, love, haha, wow, angry, fire } = data;
 
-    let likes = await likesModel.findOne({ blogId: blogId, visitorId: visitorId });
+    if (!isValid(blogId)) {
+      return res.status(400).send({ status: false, message: 'Blog id is required'})
+    }
+
+    if (!isValidObjectId(blogId)) {
+      return res.status(400).send({
+        status: false,
+        message: "Invalid blog id, please enter a valid blog id",
+      });
+    }
+
+    if (!isValid(visitorId)) {
+      return res.status(400).send({ status: false, message: 'Visitor id is required'})
+    }
+
+    if (!isValidObjectId(visitorId)) {
+      return res
+        .status(400)
+        .send({
+          status: false,
+          message: "Invalid visitor id, please enter a valid visitor id",
+        });
+    }
+
+    let blog = await blogModel.findOne({ _id: blogId });
+
+    if (!blog) {
+      return res
+        .status(404)
+        .send({ status: false, message: "No blog found with this blog id" });
+    }
+
+    let visitor = await visitorModel.findOne({ _id: visitorId });
+
+    if (!visitor) {
+      return res
+        .status(404)
+        .send({
+          status: false,
+          message: "No visitor found with this visitor id",
+        });
+    }
+
+    let likes = await likesModel.findOne({
+      blogId: blogId,
+      visitorId: visitorId,
+    });
 
     if (!likes) {
       let likeData = await likesModel.create(data);
@@ -30,15 +76,18 @@ const addBlogLikesById = async (req, res) => {
       likes.wow = 0;
       likes.angry = 0;
       likes.fire = 0;
-    
+
       if (likes.like > 1) {
         likes.like = 0;
 
         await likesModel.deleteOne({
-          blogId: blogId, visitorId: visitorId
-        })
+          blogId: blogId,
+          visitorId: visitorId,
+        });
 
-        return res.status(200).send({ status: true, message: 'Like deleted from database'})
+        return res
+          .status(200)
+          .send({ status: true, message: "Like deleted from database" });
       }
 
       await likes.save();
@@ -46,9 +95,8 @@ const addBlogLikesById = async (req, res) => {
       return res
         .status(201)
         .send({ status: true, message: "Like added", data: likes });
+    }
 
-    } 
-    
     // else if ("dislike" in data) {
     //   if (likes.like > 0) {
     //     likes.like = likes.like - 1;
@@ -62,8 +110,7 @@ const addBlogLikesById = async (req, res) => {
     //   return res
     //     .status(201)
     //     .send({ status: true, message: "Dislike added", data: likes });
-    // } 
-    
+    // }
     else if ("love" in data) {
       likes.love = likes.love + 1;
 
@@ -77,10 +124,13 @@ const addBlogLikesById = async (req, res) => {
         likes.love = 0;
 
         await likesModel.deleteOne({
-          blogId: blogId, visitorId: visitorId
-        })
+          blogId: blogId,
+          visitorId: visitorId,
+        });
 
-        return res.status(200).send({ status: true, message: 'Like deleted from database'})
+        return res
+          .status(200)
+          .send({ status: true, message: "Like deleted from database" });
       }
 
       await likes.save();
@@ -101,10 +151,13 @@ const addBlogLikesById = async (req, res) => {
         likes.haha = 0;
 
         await likesModel.deleteOne({
-          blogId: blogId, visitorId: visitorId
-        })
+          blogId: blogId,
+          visitorId: visitorId,
+        });
 
-        return res.status(200).send({ status: true, message: 'Like deleted from database'})
+        return res
+          .status(200)
+          .send({ status: true, message: "Like deleted from database" });
       }
 
       await likes.save();
@@ -125,10 +178,13 @@ const addBlogLikesById = async (req, res) => {
         likes.wow = 0;
 
         await likesModel.deleteOne({
-          blogId: blogId, visitorId: visitorId
-        })
+          blogId: blogId,
+          visitorId: visitorId,
+        });
 
-        return res.status(200).send({ status: true, message: 'Like deleted from database'})
+        return res
+          .status(200)
+          .send({ status: true, message: "Like deleted from database" });
       }
 
       await likes.save();
@@ -149,10 +205,13 @@ const addBlogLikesById = async (req, res) => {
         likes.angry = 0;
 
         await likesModel.deleteOne({
-          blogId: blogId, visitorId: visitorId
-        })
+          blogId: blogId,
+          visitorId: visitorId,
+        });
 
-        return res.status(200).send({ status: true, message: 'Like deleted from database'})
+        return res
+          .status(200)
+          .send({ status: true, message: "Like deleted from database" });
       }
 
       await likes.save();
@@ -173,10 +232,13 @@ const addBlogLikesById = async (req, res) => {
         likes.fire = 0;
 
         await likesModel.deleteOne({
-          blogId: blogId, visitorId: visitorId
-        })
+          blogId: blogId,
+          visitorId: visitorId,
+        });
 
-        return res.status(200).send({ status: true, message: 'Like deleted from database'})
+        return res
+          .status(200)
+          .send({ status: true, message: "Like deleted from database" });
       }
 
       await likes.save();
@@ -185,7 +247,7 @@ const addBlogLikesById = async (req, res) => {
         .status(201)
         .send({ status: true, message: "fire added", data: likes });
     } else {
-        return res.status(400).send({ status: false, data: likes });
+      return res.status(400).send({ status: false, data: likes });
     }
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
@@ -282,21 +344,20 @@ const incBlogLikesById = async (req, res) => {
   }
 };
 
-
-
 // ADD LIKES
 const addBlogLikes = async (req, res) => {
   try {
     // let blogId = req.params.blogId;
     let data = req.body;
-    
 
     let { blogId, like, love, haha, wow, angry, fire } = data;
 
-    let likes = await likesModel.findOne({ blogId: blogId, visitorId: visitorId });
+    let likes = await likesModel.findOne({
+      blogId: blogId,
+      visitorId: visitorId,
+    });
 
     if (!likes.like) {
-
       likes.like = 1;
       let likeData = await likesModel.create(data);
 
@@ -307,7 +368,7 @@ const addBlogLikes = async (req, res) => {
       likes.like = likes.like + 1;
 
       if (likes.like > 1) {
-        likes.like = 0
+        likes.like = 0;
       }
       await likes.save();
 
@@ -395,4 +456,9 @@ const addBlogLikes = async (req, res) => {
   }
 };
 
-module.exports = { addBlogLikesById, incBlogLikesById, getAllLikes, addBlogLikes };
+module.exports = {
+  addBlogLikesById,
+  incBlogLikesById,
+  getAllLikes,
+  addBlogLikes,
+};
