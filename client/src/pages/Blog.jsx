@@ -5,15 +5,24 @@ import blogImage from "../assets/img/blog-img.jpg";
 import { Helmet } from "react-helmet";
 import { useEffect } from "react";
 import { useState } from "react";
-import { allBlogs } from "../apis/Apis";
+import { allBlogs, getPageImagesByPageName } from "../apis/Apis";
 import LocalDateFormat from "../utils/LocalDateFormat";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Blog = () => {
   const history = useNavigate();
   let ipAddress = '192.168.1.136';
   let port = 4001;
 
   const [blogs, setBlogs] = useState([]);
+  const [coverImage, setCoverImage] = useState({ url: "", alt: "" });
+   const getCoverImageByPageName = () => {
+      getPageImagesByPageName("BLOG").then((res) => {
+         setCoverImage({
+            url: res.data.data.imageUrl,
+            alt: res.data.data.altText,
+         });
+      });
+   };
 
   const fetchBlogs = async () => {
     await allBlogs().then(res => {
@@ -30,6 +39,7 @@ const Blog = () => {
   }
   useEffect(() => {
     fetchBlogs();
+    getCoverImageByPageName();
   },[])
 
   return (
@@ -38,37 +48,40 @@ const Blog = () => {
         <title>Blog</title>
         <meta name="Blog" description="Cyber Related blogs"/>
       </Helmet>
-      <section
-        style={{
-          background: `url(${blogImage})`,
-          backgroundRepeat: "no-repeat",
-          height: "900px",
-          width: "100%",
-          backgroundSize: "cover",
-        }}
-        u
-        className="d-flex align-items-center page-hero  inner-page-hero "
-        id="page-hero"
-      >
-        <div className="overlay-photo-image-bg parallax"></div>
-        <div className="overlay-color" data-bg-opacity=".75"></div>
-        <div className="container">
-          <div className="hero-text-area centerd">
-            <h1 className="hero-title  wow fadeInUp" data-wow-delay=".2s">
-              Blog
-            </h1>
-            <nav aria-label="breadcrumb ">
-              <ul className="breadcrumb wow fadeInUp" data-wow-delay=".6s">
-                <li className="breadcrumb-item">
-                  <a className="breadcrumb-link" >
-                    <i className="bi bi-house icon "></i>home
-                  </a>
-                </li>
-                <li className="breadcrumb-item active">blog</li>
-              </ul>
-            </nav>
-          </div>
-        </div>
+      <section id="page-hero">
+
+        <div>
+            <div style={{ position: "relative", height: "100%", maxHeight:'900px', overflow:'hidden' }}>
+               <div className="coverImageTextDiv">
+               <div class="container">
+               <div class="hero-text-area centerd">
+                  <h1 class="hero-title  wow fadeInUp" data-wow-delay=".2s" style={{fontSize:'4rem', fontWeight:'bold'}}>
+                  Blog
+                  </h1>
+                  <nav aria-label="breadcrumb ">
+                     <ul class="breadcrumb wow fadeInUp" data-wow-delay=".6s">
+                        <li class="breadcrumb-item">
+                           <Link class="breadcrumb-link" to="/service">
+                              <i class="bi bi-house icon "></i>home
+                           </Link>
+                        </li>
+                        <li class="breadcrumb-item active">blog</li>
+                     </ul>
+                  </nav>
+               </div>
+            </div>
+               </div>
+               <div className="coverImageOverlayDiv"></div>
+               <img
+                  width={"100%"}
+                  height={"100%"}
+                  src={coverImage.url}
+                  alt={coverImage.alt}
+                  style={{ objectFit: "cover" }}
+               />
+              
+            </div>
+         </div>
       </section>
       <section className="blog blog-home mega-section">
         <div className="container ">

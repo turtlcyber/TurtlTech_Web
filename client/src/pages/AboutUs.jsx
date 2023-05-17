@@ -12,6 +12,8 @@ import visionImage from "../assets/img/3.png";
 import { Helmet } from "react-helmet";
 import Testimonials from "../components/Testimonials";
 import Carousel from "carousel-react-rcdev";
+import { getPageImagesByPageName } from "../apis/Apis";
+import { Link } from "react-router-dom";
 
 const slideWidth = 30;
 
@@ -85,43 +87,61 @@ const data1 = [
 
 const AboutUs = () => {
    const [testimonialData, setTestimonial] = useState([]);
-
-   useEffect(() => {}, []);
+   const [coverImage, setCoverImage] = useState({ url: "", alt: "" });
+   const getCoverImageByPageName = () => {
+      getPageImagesByPageName("ABOUTUS").then((res) => {
+         setCoverImage({
+            url: res.data.data.imageUrl,
+            alt: res.data.data.altText,
+         });
+      });
+   };
+   useEffect(() => {
+      getCoverImageByPageName();
+   }, []);
    return (
       <div>
          <Helmet>
             <title>About Us</title>
          </Helmet>
          <section
-            class="d-flex align-items-center page-hero  inner-page-hero "
+            
             id="page-hero"
-            style={{
-               background: `url(${abotUs})`,
-               backgroundRepeat: "no-repeat",
-               width: "100%",
-               backgroundSize: "cover",
-            }}
+            
          >
-            <div class="container">
+            
+            <div>
+            <div style={{ position: "relative", height: "100%", maxHeight:'900px', overflow:'hidden' }}>
+               <div className="coverImageTextDiv">
+               <div class="container">
                <div class="hero-text-area centerd">
-                  <h1 class="hero-title  wow fadeInUp" data-wow-delay=".2s">
-                     About Us
+                  <h1 class="hero-title  wow fadeInUp" data-wow-delay=".2s" style={{fontSize:'4rem', fontWeight:'bold'}}>
+                     About us
                   </h1>
                   <nav aria-label="breadcrumb ">
                      <ul class="breadcrumb wow fadeInUp" data-wow-delay=".6s">
                         <li class="breadcrumb-item">
-                           <a class="breadcrumb-link" href="index.html">
+                           <Link class="breadcrumb-link" to="/service">
                               <i class="bi bi-house icon "></i>home
-                           </a>
+                           </Link>
                         </li>
-                        <a href="about Us.html">
-                           {" "}
-                           <li class="breadcrumb-item active">about us</li>
-                        </a>
+                        <li class="breadcrumb-item active">about us</li>
                      </ul>
                   </nav>
                </div>
             </div>
+               </div>
+               <div className="coverImageOverlayDiv"></div>
+               <img
+                  width={"100%"}
+                  height={"100%"}
+                  src={coverImage.url}
+                  alt={coverImage.alt}
+                  style={{ objectFit: "cover" }}
+               />
+              
+            </div>
+         </div>
          </section>
 
          <section class="about mega-section" id="about">

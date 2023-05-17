@@ -1,43 +1,59 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import contact from "../assets/images/bg-contact.jpg";
 import { Helmet } from "react-helmet";
+import { getPageImagesByPageName } from "../apis/Apis";
+import { Link } from "react-router-dom";
 const Contact = () => {
+   const [coverImage, setCoverImage] = useState({ url: "", alt: "" });
+   const getCoverImageByPageName = () => {
+      getPageImagesByPageName("CONTACT").then((res) => {
+         setCoverImage({
+            url: res.data.data.imageUrl,
+            alt: res.data.data.altText,
+         });
+      });
+   };
+   useEffect(() => {
+      getCoverImageByPageName();
+   }, []);
    return (
       <div>
          <Helmet>
             <title>Contact Us</title>
          </Helmet>
-         <section
-            class="d-flex align-items-center page-hero  "
-            style={{
-               background: `url(${contact})`,
-               backgroundRepeat: "no-repeat",
-               width: "100%",
-            }}
-            id="page-hero"
-         >
-            <div class="overlay-photo-image-bg parallax"></div>
-
-            <div class="overlay-color" data-bg-opacity=".75"></div>
-            <div class="container">
-               <center />
+         <section id="page-hero">
+         <div>
+            <div style={{ position: "relative", height: "100%", maxHeight:'900px', overflow:'hidden' }}>
+               <div className="coverImageTextDiv">
+               <div class="container">
                <div class="hero-text-area centerd">
-                  <h1 class="hero-title  wow fadeInUp" data-wow-delay=".2s">
-                     Contact Us
+                  <h1 class="hero-title  wow fadeInUp" data-wow-delay=".2s" style={{fontSize:'4rem', fontWeight:'bold'}}>
+                     Contact us
                   </h1>
                   <nav aria-label="breadcrumb ">
                      <ul class="breadcrumb wow fadeInUp" data-wow-delay=".6s">
                         <li class="breadcrumb-item">
-                           <a class="breadcrumb-link" href="#0">
+                           <Link class="breadcrumb-link" to="/contact">
                               <i class="bi bi-house icon "></i>home
-                           </a>
+                           </Link>
                         </li>
                         <li class="breadcrumb-item active">contact us</li>
-                        <center />
                      </ul>
                   </nav>
                </div>
             </div>
+               </div>
+               <div className="coverImageOverlayDiv"></div>
+               <img
+                  width={"100%"}
+                  height={"100%"}
+                  src={coverImage.url}
+                  alt={coverImage.alt}
+                  style={{ objectFit: "cover" }}
+               />
+              
+            </div>
+         </div>
          </section>
 
          <section class="contact-us  mega-section  pb-0" id="contact-us">

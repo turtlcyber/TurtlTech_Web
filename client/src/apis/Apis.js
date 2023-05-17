@@ -83,6 +83,12 @@ export const getAllPageImages = () => {
       url: `http://${ipAddress}:${port}/allpageimages`,
   })
 }
+export const getPageImagesByPageName = (pageName) => {
+   return axios({
+      method: 'GET',
+      url: `http://${ipAddress}:${port}/pageImage/${pageName}`,
+  })
+}
 export const getAllSeosApi = () => {
    return axios({
       method: 'GET',

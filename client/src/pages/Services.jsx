@@ -1,31 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import image1 from "../assets/img/HsPiR2R.webp";
 import { Link } from "react-router-dom";
 import AllServices from "../components/AllServices";
+import { getPageImagesByPageName } from "../apis/Apis";
 
 const Services = () => {
+   const [coverImage, setCoverImage] = useState({ url: "", alt: "" });
+   const getCoverImageByPageName = () => {
+      getPageImagesByPageName("SERVICES").then((res) => {
+         setCoverImage({
+            url: res.data.data.imageUrl,
+            alt: res.data.data.altText,
+         });
+      });
+   };
+   useEffect(() => {
+      getCoverImageByPageName();
+   },[])
    return (
       <div>
-         <section
-            class="d-flex align-items-center page-hero  inner-page-hero "
-            id="page-hero"
-            style={{
-               background: `url(${image1})`,
-               backgroundRepeat: "no-repeat",
-               width: "100%",
-            }}
-         >
-            <div class="overlay-photo-image-bg parallax"></div>
-            <div class="overlay-color" data-bg-opacity=".75"></div>
-            <div class="container">
+         <section id="page-hero">
+         <div>
+            <div style={{ position: "relative", height: "100%", maxHeight:'900px', overflow:'hidden' }}>
+               <div className="coverImageTextDiv">
+               <div class="container">
                <div class="hero-text-area centerd">
-                  <h1 class="hero-title  wow fadeInUp" data-wow-delay=".2s">
-                     Services{" "}
+                  <h1 class="hero-title  wow fadeInUp" data-wow-delay=".2s" style={{fontSize:'4rem', fontWeight:'bold'}}>
+                     Services
                   </h1>
                   <nav aria-label="breadcrumb ">
                      <ul class="breadcrumb wow fadeInUp" data-wow-delay=".6s">
                         <li class="breadcrumb-item">
-                           <Link class="breadcrumb-link" to="/">
+                           <Link class="breadcrumb-link" to="/service">
                               <i class="bi bi-house icon "></i>home
                            </Link>
                         </li>
@@ -34,6 +40,18 @@ const Services = () => {
                   </nav>
                </div>
             </div>
+               </div>
+               <div className="coverImageOverlayDiv"></div>
+               <img
+                  width={"100%"}
+                  height={"100%"}
+                  src={coverImage.url}
+                  alt={coverImage.alt}
+                  style={{ objectFit: "cover" }}
+               />
+              
+            </div>
+         </div>
          </section>
          <section class="services services-boxed mega-section  " id="services">
             <div class="container">
