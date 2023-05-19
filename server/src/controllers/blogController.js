@@ -87,15 +87,23 @@ const createBlog = async (req, res) => {
     }
     blogData.coverImg = abc;
 
-   
-    // blogData.coverImg.altText = coverImgAlt ? coverImgAlt : 'turtltech.com';
-
     blogData.sections = secArr;
 
+     /*
+      pageDescription,
+      pageKeywords,
+      pageUrl,
+      imageUrl,
+      siteName,
+      altImageText,
+      imageHight,
+      imageWidth
+    */
+
+    blogData.seoData = JSON.parse(data.seoData);
     
     let blog = await blogModel.create(blogData);
-    // console.log("Testing", blogData);
-
+    
     return res.status(201).send({
       status: true,
       message: "Blog created successfully",

@@ -57,40 +57,36 @@ const getAllSEO = async (req, res) => {
   }
 };
 
-
 // GET PAGE SEO by Name
 const getSEOByPageName = async (req, res) => {
-    try {
-      let turtlseos = await turtlSEOModel.findOne({ pageName: req.params.pageName });
-  
-      if (!turtlseos) {
-        return res
-          .status(404)
-          .send({ status: false, message: "No Page found" });
-      }
-  
-      return res.status(200).send({ status: true, data: turtlseos });
-    } catch (error) {
-      return res.status(500).send({ status: false, message: error.message });
+  try {
+    let turtlseos = await turtlSEOModel.findOne({
+      pageName: req.params.pageName,
+    });
+
+    if (!turtlseos) {
+      return res.status(404).send({ status: false, message: "No Page found" });
     }
-  };
+
+    return res.status(200).send({ status: true, data: turtlseos });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
 
 // UPDATE TURTL SEO DATA
 const updateTurtlSEOData = async (req, res) => {
   try {
-    let pageId = req.params.pageId;
-    console.log("Hello example", pageId);
+    let seoId = req.params.seoId;
 
-    if (!isValidObjectId(pageId)) {
+    if (!isValidObjectId(seoId)) {
       return res.status(400).send({
         status: false,
         message: "Invalid pageId, please enter a valid pageId",
       });
     }
 
-    let pageSEO = await turtlSEOModel.findById(pageId);
-
-    // console.log(pageSEO);
+    let pageSEO = await turtlSEOModel.findById(seoId);
 
     if (!pageSEO) {
       return res.status(404).send({
@@ -102,13 +98,11 @@ const updateTurtlSEOData = async (req, res) => {
     let body = req.body;
 
     let seoData = {};
-
-    if ("pageName" in body) {
-      pageSEO.pageName = body.pageName;
-    }
-
+ 
     if ("seoData" in body) {
+      
       if ("pageTitle" in body.seoData) {
+
         pageSEO.seoData.pageTitle = body.seoData.pageTitle;
       }
 
@@ -155,4 +149,9 @@ const updateTurtlSEOData = async (req, res) => {
   }
 };
 
-module.exports = { addTurtlSEO, getAllSEO, updateTurtlSEOData, getSEOByPageName };
+module.exports = {
+  addTurtlSEO,
+  getAllSEO,
+  updateTurtlSEOData,
+  getSEOByPageName,
+};

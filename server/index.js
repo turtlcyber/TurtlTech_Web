@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const helmet = require("helmet");
 const route = require("./src/routes/routes.js");
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(fileUpload());
 app.use(cors());
+// app.use(helmet());
 // app.use(passport.initialize());
 // app.use(passport.session());
 

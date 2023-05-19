@@ -28,8 +28,7 @@ const addServiceCategory = async (req, res) => {
 
     let serviceCategoryData = {
       title,
-      description,
-      content,
+      description
     };
 
     serviceCategoryData.tags = tags.split("#").filter((el) => {
@@ -42,6 +41,10 @@ const addServiceCategory = async (req, res) => {
     };
 
     serviceCategoryData.categoryIcon = obj;
+
+    serviceCategoryData.seoData = JSON.parse(data.seoData);
+
+    serviceCategoryData.content = JSON.parse(content);
 
     await serviceCategoryModel.create(serviceCategoryData);
 

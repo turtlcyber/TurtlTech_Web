@@ -32,13 +32,13 @@ const addPortfolio = async (req, res) => {
     let portfolioData = {
       
       description,
-      content,
       portfolioField,
     };
 
     let key = Math.random().toString(36).slice(2,8);
     portfolioData.title = title;
     portfolioData.portfolioUID = key;
+    portfolioData.content = JSON.parse(content);
 
     portfolioData.tags = tags.split("#").filter((el) => {
       return el.length > 0 && el.trim();
@@ -49,6 +49,12 @@ const addPortfolio = async (req, res) => {
     };
 
     portfolioData.coverImage = obj;
+
+    portfolioData.seoData = JSON.parse(data.seoData);
+
+    let obj1 = JSON.parse(portfolioField);
+    portfolioData.portfolioField = obj1.field;
+    portfolioData.categoryTitle = obj1.categoryName;
 
     let portfolioAdded = await portfolioModel.create(portfolioData);
 
@@ -95,4 +101,20 @@ const getPortfolioByParams = async (req, res) => {
   }
 };
 
-module.exports = { addPortfolio, getAllPortfoios, getPortfolioByParams };
+const getPortfolioByField = async (req, res) => {
+  try {
+    let field = req.params.field;
+
+    let portfolios = await portfolioModel.find({ portfolioField: field });
+    
+
+    if (!portfolios) {
+      return res.status(404).send({ status: false, message: "Portfolio not found" });
+    }
+    return res.status(200).send({ status: true, data: portfolios });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+module.exports = { addPortfolio, getAllPortfoios, getPortfolioByParams, getPortfolioByField };

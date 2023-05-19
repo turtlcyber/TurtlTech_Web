@@ -75,6 +75,7 @@ router.get("/testimonials", testimonialController.getAllTestimonials);
 router.post("/portfolio", portfolioController.addPortfolio);
 router.get("/portfolios", portfolioController.getAllPortfoios);
 router.get("/services/:slug", portfolioController.getPortfolioByParams);
+router.get("/services/portfolios/:field", portfolioController.getPortfolioByField);
 
 // CERTIFICATE API
 router.post("/certificate", certificateController.addCertificate);
@@ -97,7 +98,7 @@ router.get("/pageimage/:pageName", pageImageController.getImageByPageName);
 router.post("/turtlseo", turtlSEOController.addTurtlSEO);
 router.get("/getallseos", turtlSEOController.getAllSEO);
 router.get("/turtlseo/:pageName", turtlSEOController.getSEOByPageName);
-router.put("/turtlseo/:pageId", turtlSEOController.updateTurtlSEOData);
+router.put("/turtlseo/:seoId", turtlSEOController.updateTurtlSEOData);
 
 // CONTACT US API
 router.post("/contactus", contactUsController.addContactUsDetails);
