@@ -134,6 +134,7 @@ const Home = () => {
       await allAllPortfoliosApi()
          .then((res) => {
             setPortfolios(res.data.data);
+            console.log(res.data.data);
          })
          .catch((err) => {
             console.log(err);
@@ -238,6 +239,7 @@ const Home = () => {
                      <div className="hero-text-area">
                         <div className="row">
                            <div className="col-12">
+                              
                               <div
                                  className="pre-title"
                                  style={{ fontSize: "larger" }}
@@ -814,12 +816,12 @@ const Home = () => {
                         ))}
                      </div>
                   </Tab>
-                  {[...new Set(portfolios.map((el) => el.portfolioField))].map(
+                  {[...new Set(portfolios.map((el) => el.categoryTitle))].map(
                      (el, i) => (
                         <Tab className="portfolio-btn" eventKey={el} title={el}>
                            <div className="row">
                               {portfolios
-                                 .filter((curr) => curr.portfolioField === el)
+                                 .filter((curr) => curr.categoryTitle === el)
                                  .map((el, i) => (
                                     <PortfolioTabCard
                                        image={el.coverImage.coverImgUrl}

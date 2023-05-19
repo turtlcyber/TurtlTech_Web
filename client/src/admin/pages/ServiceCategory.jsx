@@ -23,6 +23,17 @@ const ServiceCategory = () => {
       isPreview: false,
    });
    const state = useSelector((state) => state);
+   const [seoData, setSeoData] = useState({
+      pageTitle: "",
+      pageDescription: "",
+      pageKeywords: "",
+      pageUrl: "",
+      imageUrl: "",
+      siteName: "",
+      altImageText: "",
+      imageHight: "",
+      imageWidth: "",
+   });
    const clearEditor = () => {
       const newKey = editorKey * 43;
       setEditorKey(newKey);
@@ -51,6 +62,34 @@ const ServiceCategory = () => {
    };
   
    const saveServCate = async () => {
+      let dataSeo = {};
+      if (seoData.pageTitle) {
+         dataSeo.pageTitle = seoData.pageTitle;
+      }
+      if (seoData.pageDescription) {
+         dataSeo.pageDescription = seoData.pageDescription;
+      }
+      if (seoData.pageKeywords) {
+         dataSeo.pageKeywords = seoData.pageKeywords;
+      }
+      if (seoData.pageUrl) {
+         dataSeo.pageUrl = seoData.pageUrl;
+      }
+      if (seoData.imageUrl) {
+         dataSeo.imageUrl = seoData.imageUrl;
+      }
+      if (seoData.siteName) {
+         dataSeo.siteName = seoData.siteName;
+      }
+      if (seoData.altImageText) {
+         dataSeo.altImageText = seoData.altImageText;
+      }
+      if (seoData.imageHight) {
+         dataSeo.imageHight = seoData.imageHight;
+      }
+      if (seoData.imageWidth) {
+         dataSeo.imageWidth = seoData.imageWidth;
+      }
       const form = new FormData();
       console.log(servcieCategory);
 
@@ -60,6 +99,7 @@ const ServiceCategory = () => {
       form.append("iconAlt", icon.alt);
       form.append("tags", servcieCategory.tags);
       form.append("content", JSON.stringify(servcieCategory.content));
+      form.append("seoData", JSON.stringify(dataSeo));
       console.log(servcieCategory);
       console.log(icon);
       dispatch(SpinnerOpen());
@@ -75,6 +115,8 @@ const ServiceCategory = () => {
             dispatch(SpinnerClose());
          });
    };
+
+
    return (
       <React.Fragment>
          <div
@@ -241,6 +283,200 @@ const ServiceCategory = () => {
                               "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
                         }}
                      />
+                      <div className="col-8 mt-5 text-start">
+                     <h3 className="my-1">SEO Information</h3>
+                     <div class="input-group input-group-sm mb-1">
+                        <span
+                           class="input-group-text"
+                           id="inputGroup-sizing-sm"
+                           style={{ width: "130px" }}
+                        >
+                           Page Title
+                        </span>
+                        <input
+                           type="text"
+                           class="form-control"
+                           aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm"
+                           value={seoData.pageTitle}
+                           onChange={(e) =>
+                              setSeoData((old) => {
+                                 return { ...old, pageTitle: e.target.value };
+                              })
+                           }
+                        />
+                     </div>
+                     <div class="input-group input-group-sm mb-1">
+                        <span
+                           class="input-group-text"
+                           id="inputGroup-sizing-sm"
+                           style={{ width: "130px" }}
+                        >
+                           Page Description
+                        </span>
+                        <input
+                           type="text"
+                           class="form-control"
+                           aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm"
+                           value={seoData.pageDescription}
+                           onChange={(e) =>
+                              setSeoData((old) => {
+                                 return {
+                                    ...old,
+                                    pageDescription: e.target.value,
+                                 };
+                              })
+                           }
+                        />
+                     </div>
+                     <div class="input-group input-group-sm mb-1">
+                        <span
+                           class="input-group-text"
+                           id="inputGroup-sizing-sm"
+                           style={{ width: "130px" }}
+                        >
+                           Page Keywords
+                        </span>
+                        <input
+                           type="text"
+                           class="form-control"
+                           aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm"
+                           value={seoData.pageKeywords}
+                           onChange={(e) =>
+                              setSeoData((old) => {
+                                 return {
+                                    ...old,
+                                    pageKeywords: e.target.value,
+                                 };
+                              })
+                           }
+                        />
+                     </div>
+                     <div class="input-group input-group-sm mb-1">
+                        <span
+                           class="input-group-text"
+                           id="inputGroup-sizing-sm"
+                           style={{ width: "130px" }}
+                        >
+                           Page URL
+                        </span>
+                        <input
+                           type="text"
+                           class="form-control"
+                           aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm"
+                           value={seoData.pageUrl}
+                           onChange={(e) =>
+                              setSeoData((old) => {
+                                 return { ...old, pageUrl: e.target.value };
+                              })
+                           }
+                        />
+                     </div>
+                     <div class="input-group input-group-sm mb-1">
+                        <span
+                           class="input-group-text"
+                           id="inputGroup-sizing-sm"
+                           style={{ width: "130px" }}
+                        >
+                           Image URL
+                        </span>
+                        <input
+                           type="text"
+                           class="form-control"
+                           aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm"
+                           value={seoData.imageUrl}
+                           onChange={(e) =>
+                              setSeoData((old) => {
+                                 return { ...old, imageUrl: e.target.value };
+                              })
+                           }
+                        />
+                     </div>
+                     <div class="input-group input-group-sm mb-1">
+                        <span
+                           class="input-group-text"
+                           id="inputGroup-sizing-sm"
+                           style={{ width: "130px" }}
+                        >
+                           Site Name
+                        </span>
+                        <input
+                           type="text"
+                           class="form-control"
+                           aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm"
+                           value={seoData.siteName}
+                           onChange={(e) =>
+                              setSeoData((old) => {
+                                 return { ...old, siteName: e.target.value };
+                              })
+                           }
+                        />
+                     </div>
+                     <div class="input-group input-group-sm mb-1">
+                        <span
+                           class="input-group-text"
+                           id="inputGroup-sizing-sm"
+                           style={{ width: "130px" }}
+                        >
+                           Alt Image Text
+                        </span>
+                        <input
+                           type="text"
+                           class="form-control"
+                           aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm"
+                           value={seoData.altImageText}
+                           onChange={(e) =>
+                              setSeoData((old) => {
+                                 return {
+                                    ...old,
+                                    altImageText: e.target.value,
+                                 };
+                              })
+                           }
+                        />
+                     </div>
+                     <div class="input-group input-group-sm mb-4">
+                        <span
+                           class="input-group-text"
+                           id="inputGroup-sizing-sm"
+                           style={{ width: "180px" }}
+                        >
+                           Image Height - Width
+                        </span>
+                        <input
+                           type="text"
+                           class="form-control"
+                           aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm"
+                           value={seoData.imageHight}
+                           placeholder="Height"
+                           onChange={(e) =>
+                              setSeoData((old) => {
+                                 return { ...old, imageHight: e.target.value };
+                              })
+                           }
+                        />
+                        <input
+                           type="text"
+                           class="form-control"
+                           aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm"
+                           value={seoData.imageWidth}
+                           placeholder="Width"
+                           onChange={(e) =>
+                              setSeoData((old) => {
+                                 return { ...old, imageWidth: e.target.value };
+                              })
+                           }
+                        />
+                     </div>
+                     </div>
                      <button
                         className="btn btn-primary my-2"
                         onClick={() => demo()}

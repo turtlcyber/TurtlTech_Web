@@ -14,6 +14,7 @@ import {
    getAllSeosApi,
    saveCompanyInfoApi,
    saveTurtlSeoDataApi,
+   updateSeoBySeoId,
 } from "../../apis/Apis";
 import axios from "axios";
 import exampleImg from "../../assets/images/open_graph_tags.png";
@@ -24,6 +25,11 @@ import { SpinnerClose, SpinnerOpen } from "../../redux/R_Action";
 const TurtlsInfo = () => {
    const dispatch = useDispatch();
    const [seoPage, setSeoPage] = useState("");
+   const [isSeoEdited, setIsSeoEdited] = useState({
+      flag:false,
+      pageName: "",
+      _id:''
+   })
    const [seoData, setSeoData] = useState({
       pageTitle: "",
       pageDescription: "",
@@ -58,8 +64,11 @@ const TurtlsInfo = () => {
    };
 
    const seoDataSave = async () => {
-      
-      let data = { pageName: seoPage };
+
+      let data = {};
+      if(!isSeoEdited.flag){
+         data.pageName = seoPage;
+      }
       let dataSeo = {};
       if (seoData.pageTitle) {
          dataSeo.pageTitle = seoData.pageTitle;
@@ -90,7 +99,31 @@ const TurtlsInfo = () => {
       }
       data.seoData = dataSeo;
       dispatch(SpinnerOpen());
-      await saveTurtlSeoDataApi(data)
+      if(isSeoEdited.flag){
+         await updateSeoBySeoId(isSeoEdited._id, data).then(res => {
+            console.log(res.data);
+            alert(res.data.message);
+            setSeoData({
+               pageTitle: "",
+               pageDescription: "",
+               pageKeywords: "",
+               pageUrl: "",
+               imageUrl: "",
+               siteName: "",
+               altImageText: "",
+               imageHight: "",
+               imageWidth: "",
+            });
+            setSeoPage("");
+            dispatch(SpinnerClose());
+         }).catch(err => {
+            console.log(err);
+            alert(err.response.data.message);
+            dispatch(SpinnerClose());
+         })
+      }
+      else{
+         await saveTurtlSeoDataApi(data)
          .then((res) => {
             console.log(res.data);
             alert(res.data.message)
@@ -113,6 +146,8 @@ const TurtlsInfo = () => {
             alert(err.response.data.message);
       dispatch(SpinnerClose());
          });
+      }
+      
    };
 
    const saveCompanyInfo = async () => {
@@ -156,6 +191,11 @@ const TurtlsInfo = () => {
          });
    };
    const editSeoData = (edit_id) => {
+      let oneObj = seoDataFromServer.find(el => el._id === edit_id);
+      if(oneObj){
+         setIsSeoEdited({flag:true, pageName:oneObj.pageName, _id:edit_id});
+         setSeoData(oneObj.seoData);
+      }
       console.log(edit_id);
    };
    const reloadSEOdata = () => {
@@ -171,8 +211,23 @@ const TurtlsInfo = () => {
             dispatch(SpinnerClose());
          });
    };
+   const cancelSeoEditing = () => {
+      setIsSeoEdited({flag:false, pageName:''});
+      setSeoData({
+         pageTitle: "",
+         pageDescription: "",
+         pageKeywords: "",
+         pageUrl: "",
+         imageUrl: "",
+         siteName: "",
+         altImageText: "",
+         imageHight: "",
+         imageWidth: "",
+      });
+   }
 
    useEffect(() => {
+      cancelSeoEditing();
       reloadSEOdata();
    }, []);
 
@@ -344,7 +399,20 @@ const TurtlsInfo = () => {
             <Tab className="portfolio-btn" eventKey="seo" title="SEO">
                <div className="row mt-4 text-start">
                   <div className="col-6 border-end">
-                     <div className="row mb-3">
+                  {isSeoEdited.flag && (
+                        <div
+                           className="d-flex justify-content-start mb-2"
+                           style={{ height: "38px" }}
+                        >
+                           <h3 className="my-0">
+                              <span class="badge bg-black">Editing</span>
+                           </h3>
+                           <h3 className="my-0 ms-3">
+                              <span class="">{isSeoEdited.pageName}</span>
+                           </h3>
+                        </div>
+                     )}
+                     {!isSeoEdited.flag && <div className="row mb-3">
                         <div className="col">
                            <div class="input-group">
                               <span className="form-control">
@@ -370,7 +438,7 @@ const TurtlsInfo = () => {
                               <option value="FAQ">FAQ</option>
                            </select>
                         </div>
-                     </div>
+                     </div>}
 
                      <div class="input-group input-group-sm mb-1">
                         <span
@@ -566,11 +634,21 @@ const TurtlsInfo = () => {
 
                      <div class="input-group mb-3">
                         <button
-                           className="btn btn-success"
+                           className={isSeoEdited.flag ? 'btn btn-primary':'btn btn-success'}
                            onClick={() => seoDataSave()}
                         >
-                           Save to Database
+                           {isSeoEdited.flag ? 'Update SEO' : 'Save to Database'}
                         </button>
+                        {
+                           isSeoEdited.flag &&
+                           <button
+                           className="btn btn-warning"
+                           onClick={() => cancelSeoEditing()}
+                        >
+                           Cancel Editing
+                        </button>
+                        }
+                        
                      </div>
                   </div>
                   <div className="col-6">

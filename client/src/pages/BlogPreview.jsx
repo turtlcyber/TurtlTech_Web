@@ -14,9 +14,11 @@ import { LikeEnum } from "../utils/Enums";
 import Cookies from 'js-cookie';
 import Prism from "prismjs";
 import LoginForm from "../components/LoginForm";
+import { Helmet } from "react-helmet";
 const BlogPreview = () => {
    const params = useParams();
    const [blog, setBlog] = useState(null);
+   const [seoDataFromServer, setSeoDataFromServer] = useState({});
    let ipAddress = "192.168.1.167";
    let port = 4001;
 
@@ -34,6 +36,10 @@ const BlogPreview = () => {
          .then((res) => {
             console.log(res.data);
             setBlog(res.data.blog);
+            if(res.data.blog.seoData){
+               console.log("in",res.data.blog.seoData);
+               setSeoDataFromServer({seoData: res.data.blog.seoData});
+            }
             
          })
          .catch((err) => {
@@ -42,6 +48,77 @@ const BlogPreview = () => {
    }, []);
    return (
       <>
+      <Helmet>
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageTitle && (
+                  <title>{seoDataFromServer.seoData.pageTitle}</title>
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageTitle && (
+                  <meta
+                     name="title"
+                     property="og:title"
+                     content={seoDataFromServer.seoData.pageTitle}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageDescription && (
+                  <meta
+                     name="description"
+                     property="og:description"
+                     content={seoDataFromServer.seoData.pageDescription}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageKeywords && (
+                  <meta
+                     name="keywords"
+                     property="og:keywords"
+                     content={seoDataFromServer.seoData.pageKeywords}
+                  />
+               )}
+            {seoDataFromServer.seoData && seoDataFromServer.seoData.pageUrl && (
+               <meta
+                  name="url"
+                  property="og:url"
+                  content={seoDataFromServer.seoData.pageUrl}
+               />
+            )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.siteName && (
+                  <meta
+                     name="site_name"
+                     property="og:site_name"
+                     content={seoDataFromServer.seoData.siteName}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageUrl && (
+                  <meta
+                     name="image"
+                     property="og:image"
+                     content={seoDataFromServer.seoData.imageUrl}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageUrl && (
+                  <meta property="og:image:type" content="image/png" />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageWidth && (
+                  <meta
+                     property="og:image:width"
+                     content={seoDataFromServer.seoData.imageWidth}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageHight && (
+                  <meta
+                     property="og:image:height"
+                     content={seoDataFromServer.seoData.imageHight}
+                  />
+               )}
+         </Helmet>
       
          <div
             class="blog"

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const PortfolioTabCard = ({ image, title, slug }) => {
    const history = useNavigate();
    const openPortfolio = (slug) => {
-      history(`/services/${slug}`);
+      history(`/services/portfolio/${slug}`);
       console.log(slug);
    };
    return (

@@ -7,7 +7,8 @@ import Blog from "../pages/Blog"
 import Contact from '../pages/Contact';
 import TalkToSales from '../pages/TalkToSales';
 import AskHr from '../pages/AskHr';
-import ServicesDetails from '../pages/Services-turtl';
+import PortFolioPreview from '../pages/Services-turtl';
+import ServiceCategory from '../pages/ServiceCategory';
 import BlogPreview from '../pages/BlogPreview';
 import FAQ from '../pages/FAQ';
 
@@ -24,7 +25,8 @@ const MainRoute = () => {
             <Route path="/contact" element={<Contact/>} />
            <Route path="/sales" element={<TalkToSales/>}/>
            <Route path="/faq" element={<FAQ/>}/>
-           <Route path="/services/:slug" element={<ServicesDetails/>}/>
+           <Route path="/services/service_category/:slug" element={<ServiceCategory/>}/>
+           <Route path="/services/portfolio/:slug" element={<PortFolioPreview/>}/>
         </Routes>
     </div>
   )

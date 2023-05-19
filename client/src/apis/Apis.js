@@ -44,6 +44,21 @@ export const portfolioBySlugApi = (slug) => {
   })
 }
 
+export const portfoliosByFieldApi = (field) => {
+   return axios({
+      method: 'GET',
+      url: `http://${ipAddress}:${port}/services/portfolios/${field}`,
+  })
+}
+
+
+export const serviceCategoryBySlugApi = (slug) => {
+   return axios({
+      method: 'GET',
+      url: `http://${ipAddress}:${port}/servicecategory/${slug}`,
+  })
+}
+
 export const getAllImages = () => {
    return axios({
       method: 'GET',
@@ -120,6 +135,13 @@ export const getSeoByPageName = (pageName) => {
    return axios({
       method: 'GET',
       url: `http://${ipAddress}:${port}/turtlseo/${pageName}`,
+  })
+}
+export const updateSeoBySeoId = (id,data) => {
+   return axios({
+      method: 'PUT',
+      url: `http://${ipAddress}:${port}/turtlseo/${id}`,
+      data:data
   })
 }
 export const getTurtlsInfoApi = () => {
