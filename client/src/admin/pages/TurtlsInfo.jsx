@@ -12,6 +12,7 @@ import { TbReload } from "react-icons/tb";
 
 import {
    getAllSeosApi,
+   getTurtlsInfoApi,
    saveCompanyInfoApi,
    saveTurtlSeoDataApi,
    updateSeoBySeoId,
@@ -26,10 +27,26 @@ const TurtlsInfo = () => {
    const dispatch = useDispatch();
    const [seoPage, setSeoPage] = useState("");
    const [isSeoEdited, setIsSeoEdited] = useState({
-      flag:false,
+      flag: false,
       pageName: "",
-      _id:''
-   })
+      _id: "",
+   });
+   const [subSidiaryAddArr, setSubSidiaryAddArr] = useState([]);
+   const [subSidiaryAddArrFetched, setSubSidiaryAddArrFetched] = useState([]);
+   const [companyInfoFetched, setCompanyInfoFetched] = useState({
+      serviceEmail: "",
+      address: "",
+      contact1: "",
+      contact2: "",
+      googleMap: "",
+   });
+   const [subSidiaryAddObj, setSubSidiaryAddObj] = useState({
+      city: "",
+      state: "",
+      country: "",
+      address: "",
+   });
+
    const [seoData, setSeoData] = useState({
       pageTitle: "",
       pageDescription: "",
@@ -62,11 +79,25 @@ const TurtlsInfo = () => {
          });
       }
    };
+   const subsidaryAddressToStack = () => {
+      if (
+         subSidiaryAddObj.address &&
+         subSidiaryAddObj.city &&
+         subSidiaryAddObj.country &&
+         subSidiaryAddObj.state
+      ) {
+         setSubSidiaryAddArr((old) => {
+            return [...old, subSidiaryAddObj];
+         });
+         setSubSidiaryAddObj({ city: "", state: "", country: "", address: "" });
+      } else {
+         console.log("Subsidiary Address All field is Mendatory");
+      }
+   };
 
    const seoDataSave = async () => {
-
       let data = {};
-      if(!isSeoEdited.flag){
+      if (!isSeoEdited.flag) {
          data.pageName = seoPage;
       }
       let dataSeo = {};
@@ -99,55 +130,55 @@ const TurtlsInfo = () => {
       }
       data.seoData = dataSeo;
       dispatch(SpinnerOpen());
-      if(isSeoEdited.flag){
-         await updateSeoBySeoId(isSeoEdited._id, data).then(res => {
-            console.log(res.data);
-            alert(res.data.message);
-            setSeoData({
-               pageTitle: "",
-               pageDescription: "",
-               pageKeywords: "",
-               pageUrl: "",
-               imageUrl: "",
-               siteName: "",
-               altImageText: "",
-               imageHight: "",
-               imageWidth: "",
+      if (isSeoEdited.flag) {
+         await updateSeoBySeoId(isSeoEdited._id, data)
+            .then((res) => {
+               console.log(res.data);
+               alert(res.data.message);
+               setSeoData({
+                  pageTitle: "",
+                  pageDescription: "",
+                  pageKeywords: "",
+                  pageUrl: "",
+                  imageUrl: "",
+                  siteName: "",
+                  altImageText: "",
+                  imageHight: "",
+                  imageWidth: "",
+               });
+               setSeoPage("");
+               dispatch(SpinnerClose());
+            })
+            .catch((err) => {
+               console.log(err);
+               alert(err.response.data.message);
+               dispatch(SpinnerClose());
             });
-            setSeoPage("");
-            dispatch(SpinnerClose());
-         }).catch(err => {
-            console.log(err);
-            alert(err.response.data.message);
-            dispatch(SpinnerClose());
-         })
-      }
-      else{
+      } else {
          await saveTurtlSeoDataApi(data)
-         .then((res) => {
-            console.log(res.data);
-            alert(res.data.message)
-            setSeoData({
-               pageTitle: "",
-               pageDescription: "",
-               pageKeywords: "",
-               pageUrl: "",
-               imageUrl: "",
-               siteName: "",
-               altImageText: "",
-               imageHight: "",
-               imageWidth: "",
+            .then((res) => {
+               console.log(res.data);
+               alert(res.data.message);
+               setSeoData({
+                  pageTitle: "",
+                  pageDescription: "",
+                  pageKeywords: "",
+                  pageUrl: "",
+                  imageUrl: "",
+                  siteName: "",
+                  altImageText: "",
+                  imageHight: "",
+                  imageWidth: "",
+               });
+               setSeoPage("");
+               dispatch(SpinnerClose());
+            })
+            .catch((err) => {
+               console.log(err);
+               alert(err.response.data.message);
+               dispatch(SpinnerClose());
             });
-            setSeoPage("");
-      dispatch(SpinnerClose());
-         })
-         .catch((err) => {
-            console.log(err);
-            alert(err.response.data.message);
-      dispatch(SpinnerClose());
-         });
       }
-      
    };
 
    const saveCompanyInfo = async () => {
@@ -165,6 +196,9 @@ const TurtlsInfo = () => {
       if (companyInfo.contact2 !== "") {
          formData.append("contactNumber", companyInfo.contact2);
       }
+      if (subSidiaryAddArr.length) {
+         formData.append("subsidiaryAddress", JSON.stringify(subSidiaryAddArr));
+      }
       console.log(companyInfo);
       dispatch(SpinnerOpen());
       await saveCompanyInfoApi(formData)
@@ -178,22 +212,27 @@ const TurtlsInfo = () => {
                googleMap: "",
             });
             setListOfSocial([]);
+            setSubSidiaryAddArr([]);
             setSingleSocial({
                url: "",
                type: "",
             });
-      dispatch(SpinnerClose());
+            dispatch(SpinnerClose());
          })
          .catch((err) => {
             console.log(err);
             alert(err.response.data.message);
-      dispatch(SpinnerClose());
+            dispatch(SpinnerClose());
          });
    };
    const editSeoData = (edit_id) => {
-      let oneObj = seoDataFromServer.find(el => el._id === edit_id);
-      if(oneObj){
-         setIsSeoEdited({flag:true, pageName:oneObj.pageName, _id:edit_id});
+      let oneObj = seoDataFromServer.find((el) => el._id === edit_id);
+      if (oneObj) {
+         setIsSeoEdited({
+            flag: true,
+            pageName: oneObj.pageName,
+            _id: edit_id,
+         });
          setSeoData(oneObj.seoData);
       }
       console.log(edit_id);
@@ -212,7 +251,7 @@ const TurtlsInfo = () => {
          });
    };
    const cancelSeoEditing = () => {
-      setIsSeoEdited({flag:false, pageName:''});
+      setIsSeoEdited({ flag: false, pageName: "" });
       setSeoData({
          pageTitle: "",
          pageDescription: "",
@@ -224,7 +263,31 @@ const TurtlsInfo = () => {
          imageHight: "",
          imageWidth: "",
       });
-   }
+   };
+   const fetchCompanyInfo = async () => {
+      await getTurtlsInfoApi()
+         .then((res) => {
+            let {
+               serviceEmail,
+               address,
+               contact1,
+               contact2,
+               googleMap,
+               subsidiaryAddress,
+            } = res.data.data;
+            setCompanyInfoFetched({
+               serviceEmail: serviceEmail,
+               address: address,
+               contact1: contact1,
+               contact2: contact2,
+               googleMap: googleMap,
+            });
+            setSubSidiaryAddArrFetched(subsidiaryAddress);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
 
    useEffect(() => {
       cancelSeoEditing();
@@ -384,6 +447,100 @@ const TurtlsInfo = () => {
                            }
                         />
                      </div>
+                     <div className="mb-3 border border-3 border-primary rounded p-2">
+                        <h4>Add Subsidiary Address</h4>
+                        {subSidiaryAddArr &&
+                           subSidiaryAddArr.map((el, i) => (
+                              <div className="d-flex flex-column bg-light mb-1 position-relative">
+                                 <span>CITY: {el.city}</span>
+                                 <span>STATE: {el.state}</span>
+                                 <span>Country: {el.country}</span>
+                                 <span>Address: {el.address}</span>
+                                 <span
+                                    className="position-absolute m-1 fw-bold top-0 end-0 bg-warning rounded text-center"
+                                    style={{ minWidth: "30px" }}
+                                 >
+                                    {i + 1}
+                                 </span>
+                              </div>
+                           ))}
+                        <div class="input-group mb-3">
+                           <span class="input-group-text" id="basic-addon1">
+                              City
+                           </span>
+                           <input
+                              type="text"
+                              class="form-control"
+                              placeholder="City Name"
+                              aria-label="email"
+                              aria-describedby="basic-addon1"
+                              value={subSidiaryAddObj.city}
+                              onChange={(e) =>
+                                 setSubSidiaryAddObj((old) => {
+                                    return { ...old, city: e.target.value };
+                                 })
+                              }
+                           />
+                        </div>
+                        <div class="input-group mb-3">
+                           <span class="input-group-text" id="basic-addon1">
+                              State
+                           </span>
+                           <input
+                              type="text"
+                              class="form-control"
+                              placeholder="State Name"
+                              aria-label="email"
+                              aria-describedby="basic-addon1"
+                              value={subSidiaryAddObj.state}
+                              onChange={(e) =>
+                                 setSubSidiaryAddObj((old) => {
+                                    return { ...old, state: e.target.value };
+                                 })
+                              }
+                           />
+                        </div>
+                        <div class="input-group mb-3">
+                           <span class="input-group-text" id="basic-addon1">
+                              Country
+                           </span>
+                           <input
+                              type="text"
+                              class="form-control"
+                              placeholder="Country Name"
+                              aria-label="country"
+                              aria-describedby="basic-addon1"
+                              value={subSidiaryAddObj.country}
+                              onChange={(e) =>
+                                 setSubSidiaryAddObj((old) => {
+                                    return { ...old, country: e.target.value };
+                                 })
+                              }
+                           />
+                        </div>
+
+                        <div class="input-group mb-3">
+                           <span class="input-group-text" id="basic-addon1">
+                              Subsidiary <br /> Address
+                           </span>
+                           <textarea
+                              class="form-control"
+                              rows={5}
+                              value={subSidiaryAddObj.address}
+                              onChange={(e) =>
+                                 setSubSidiaryAddObj((old) => {
+                                    return { ...old, address: e.target.value };
+                                 })
+                              }
+                           ></textarea>
+                        </div>
+                        <button
+                           className="btn btn-outline-primary"
+                           onClick={() => subsidaryAddressToStack()}
+                        >
+                           Add to Stack
+                        </button>
+                     </div>
                      <div class="input-group mb-3">
                         <button
                            className="btn btn-success"
@@ -399,7 +556,7 @@ const TurtlsInfo = () => {
             <Tab className="portfolio-btn" eventKey="seo" title="SEO">
                <div className="row mt-4 text-start">
                   <div className="col-6 border-end">
-                  {isSeoEdited.flag && (
+                     {isSeoEdited.flag && (
                         <div
                            className="d-flex justify-content-start mb-2"
                            style={{ height: "38px" }}
@@ -412,33 +569,35 @@ const TurtlsInfo = () => {
                            </h3>
                         </div>
                      )}
-                     {!isSeoEdited.flag && <div className="row mb-3">
-                        <div className="col">
-                           <div class="input-group">
-                              <span className="form-control">
-                                 {seoPage
-                                    ? seoPage
-                                    : "Please Select Page For SEO"}
-                              </span>
+                     {!isSeoEdited.flag && (
+                        <div className="row mb-3">
+                           <div className="col">
+                              <div class="input-group">
+                                 <span className="form-control">
+                                    {seoPage
+                                       ? seoPage
+                                       : "Please Select Page For SEO"}
+                                 </span>
+                              </div>
+                           </div>
+                           <div className="col">
+                              <select
+                                 class="form-select"
+                                 aria-label="Default select example"
+                                 value={seoPage}
+                                 onChange={(e) => setSeoPage(e.target.value)}
+                              >
+                                 <option value="">Open Page Menu</option>
+                                 <option value="HOME">HOME</option>
+                                 <option value="ABOUTUS">ABOUT US</option>
+                                 <option value="SERVICES">SERVICES</option>
+                                 <option value="BLOG">BLOG</option>
+                                 <option value="CONTACTUS">CONTACT US</option>
+                                 <option value="FAQ">FAQ</option>
+                              </select>
                            </div>
                         </div>
-                        <div className="col">
-                           <select
-                              class="form-select"
-                              aria-label="Default select example"
-                              value={seoPage}
-                              onChange={(e) => setSeoPage(e.target.value)}
-                           >
-                              <option value="">Open Page Menu</option>
-                              <option value="HOME">HOME</option>
-                              <option value="ABOUTUS">ABOUT US</option>
-                              <option value="SERVICES">SERVICES</option>
-                              <option value="BLOG">BLOG</option>
-                              <option value="CONTACTUS">CONTACT US</option>
-                              <option value="FAQ">FAQ</option>
-                           </select>
-                        </div>
-                     </div>}
+                     )}
 
                      <div class="input-group input-group-sm mb-1">
                         <span
@@ -634,21 +793,25 @@ const TurtlsInfo = () => {
 
                      <div class="input-group mb-3">
                         <button
-                           className={isSeoEdited.flag ? 'btn btn-primary':'btn btn-success'}
+                           className={
+                              isSeoEdited.flag
+                                 ? "btn btn-primary"
+                                 : "btn btn-success"
+                           }
                            onClick={() => seoDataSave()}
                         >
-                           {isSeoEdited.flag ? 'Update SEO' : 'Save to Database'}
+                           {isSeoEdited.flag
+                              ? "Update SEO"
+                              : "Save to Database"}
                         </button>
-                        {
-                           isSeoEdited.flag &&
+                        {isSeoEdited.flag && (
                            <button
-                           className="btn btn-warning"
-                           onClick={() => cancelSeoEditing()}
-                        >
-                           Cancel Editing
-                        </button>
-                        }
-                        
+                              className="btn btn-warning"
+                              onClick={() => cancelSeoEditing()}
+                           >
+                              Cancel Editing
+                           </button>
+                        )}
                      </div>
                   </div>
                   <div className="col-6">

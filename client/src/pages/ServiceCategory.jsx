@@ -127,7 +127,7 @@ const ServiceCategory = () => {
                                  <div class="post-img-wrapper post-featured-area">
                                     {
                                        <img
-                                          class="featured-img"
+                                          class=""
                                           loading="lazy"
                                           src={
                                              serviceCategory.categoryIcon
@@ -137,6 +137,7 @@ const ServiceCategory = () => {
                                              serviceCategory.categoryIcon
                                                 .iconAlt
                                           }
+                                          width={150}
                                        />
                                     }
                                  </div>
@@ -152,7 +153,9 @@ const ServiceCategory = () => {
                                        </p>
                                     }
                                     <hr />
+                                    <div className="parsedContent">
                                     {Parser(serviceCategory.content)}
+                                    </div>
 
                                     {serviceCategory.tags.length && (
                                        <div class="tags panel">

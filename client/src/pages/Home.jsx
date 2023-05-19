@@ -34,67 +34,14 @@ import {
    getSeoByPageName,
 } from "../apis/Apis";
 import { Helmet } from "react-helmet";
-const data1 = [
-   {
-      picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(2).webp",
-      name: "Lucy Maclen",
-      designation: "Senior Software Engineer",
-      story: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod eos id officiis hic tenetur quae quaerat ad velit ab hic tenetur.",
-      rating: 3.5,
-   },
-   {
-      picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(1).webp",
-      name: "Maria Smantha",
-      designation: "Web Developer",
-      story: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod eos id officiis hic tenetur quae quaerat ad velit ab hic tenetur.",
-      rating: 2.5,
-   },
-   {
-      picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(9).webp",
-      name: "John Martin",
-      designation: "Android Developer",
-      story: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod eos id officiis hic tenetur quae quaerat ad velit ab hic tenetur.",
-      rating: 4,
-   },
-   {
-      picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(1).webp",
-      name: "Vinarak Kishor",
-      designation: "Security Analyst",
-      story: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod eos id officiis hic tenetur quae quaerat ad velit ab hic tenetur.",
-      rating: 5,
-   },
-];
+import { useSelector } from "react-redux";
+
 const Home = () => {
+   const state = useSelector(state => state);
    const [certificates, setCertificate] = useState([]);
    const [testimonials, setTestimonials] = useState([]);
    const [seoDataFromServer, setSeoDataFromServer] = useState({});
-   const arrData = [
-      {
-         image: vapt,
-         title: "Pen Testing",
-         portfolioField: "Digital Marketing",
-      },
-      {
-         image: webHosting,
-         title: "Web Hosting",
-         portfolioField: "Web Apps",
-      },
-      {
-         image: mobile_app_developement,
-         title: "Mobile Apps",
-         portfolioField: "Mobile",
-      },
-      {
-         image: ExperienceTeam,
-         title: "Cyber Security",
-         portfolioField: "Web Apps",
-      },
-      {
-         image: ExperienceTeam,
-         title: "Cyber Security",
-         portfolioField: "Cyber Security",
-      },
-   ];
+   
    const [portfolios, setPortfolios] = useState([]);
 
    const getAllCertificate = () => {

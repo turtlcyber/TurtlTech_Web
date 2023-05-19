@@ -664,3 +664,8 @@ code {
    align-items: center;
    justify-content: center;
 }
+
+.parsedContent > p > img{
+   width: 100%;
+   height: fit-content;
+}

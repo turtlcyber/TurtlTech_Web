@@ -215,7 +215,7 @@ const BlogPreview = () => {
                                     <hr />
                                     {blog.sections.map((el, idx) => (
                                        <>
-                                          <div className="turtlBlog text-start mb-5">
+                                          <div className="turtlBlog parsedContent text-start mb-5">
                                              {Parser(el.content)}
                                           </div>
                                           {el.imgUrl && (

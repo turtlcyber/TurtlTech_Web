@@ -349,7 +349,6 @@ const AboutUs = () => {
                            <div class="cta-area">
                               <a
                                  class="btn-solid reveal-start"
-                                 href="contact.html"
                               >
                                  Get in touch
                               </a>

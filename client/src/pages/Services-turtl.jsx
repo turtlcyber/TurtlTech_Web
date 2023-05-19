@@ -9,13 +9,14 @@ import { portfolioBySlugApi } from "../apis/Apis";
 const ServicesDetails = () => {
   let params = useParams();
   const [portfolio, setPortfolio] = useState(null);
-
+  const [seoDataFromServer, setSeoDataFromServer] = useState({});
   useEffect(() => {
     Prism.highlightAll();
     portfolioBySlugApi(params.slug)
        .then((res) => {
           console.log(res.data);
           setPortfolio(res.data.data);
+          setSeoDataFromServer({seoData:res.data.data.seoData})
           
        })
        .catch((err) => {
@@ -23,6 +24,78 @@ const ServicesDetails = () => {
        });
  }, []);
   return (
+   <>
+   <Helmet>
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageTitle && (
+                  <title>{seoDataFromServer.seoData.pageTitle}</title>
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageTitle && (
+                  <meta
+                     name="title"
+                     property="og:title"
+                     content={seoDataFromServer.seoData.pageTitle}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageDescription && (
+                  <meta
+                     name="description"
+                     property="og:description"
+                     content={seoDataFromServer.seoData.pageDescription}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageKeywords && (
+                  <meta
+                     name="keywords"
+                     property="og:keywords"
+                     content={seoDataFromServer.seoData.pageKeywords}
+                  />
+               )}
+            {seoDataFromServer.seoData && seoDataFromServer.seoData.pageUrl && (
+               <meta
+                  name="url"
+                  property="og:url"
+                  content={seoDataFromServer.seoData.pageUrl}
+               />
+            )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.siteName && (
+                  <meta
+                     name="site_name"
+                     property="og:site_name"
+                     content={seoDataFromServer.seoData.siteName}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageUrl && (
+                  <meta
+                     name="image"
+                     property="og:image"
+                     content={seoDataFromServer.seoData.imageUrl}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageUrl && (
+                  <meta property="og:image:type" content="image/png" />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageWidth && (
+                  <meta
+                     property="og:image:width"
+                     content={seoDataFromServer.seoData.imageWidth}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageHight && (
+                  <meta
+                     property="og:image:height"
+                     content={seoDataFromServer.seoData.imageHight}
+                  />
+               )}
+         </Helmet>
     <div
             class="blog"
             style={{ paddingTop: "5rem", backgroundColor: "#f5f5f5" }}
@@ -56,7 +129,10 @@ const ServicesDetails = () => {
                                  <div class="post-main-area">
                                     {<p className="blogdesc">{portfolio.description}</p>}
                                     <hr />
+                                    <div className="parsedContent">
+
                                     {Parser(portfolio.content)}
+                                    </div>
 
                                     {portfolio.tags.length && (
                                        <div class="tags panel">
@@ -92,6 +168,7 @@ const ServicesDetails = () => {
                </div>
             </div>
          </div>
+         </>
   );
 };
 
