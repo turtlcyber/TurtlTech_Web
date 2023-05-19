@@ -81,15 +81,20 @@ const addTurtlInfo = async (req, res) => {
 
     objData.socialMediaLinks = obj;
 
-    let checkTurtlInfo = await turtlInfoAdded.findOne({ serviceEmail: serviceEmail, address: address });
+    objData.subsidiaryAddress = JSON.parse(data.subsidiaryAddress);
+
+    let checkTurtlInfo = await turtlInfoModel.findOne({ address: address });
 
     if (checkTurtlInfo) {
       checkTurtlInfo.serviceEmail = serviceEmail;
-      checkTurtlInfo.serviceEmail = serviceEmail;
+      checkTurtlInfo.address = address;
       checkTurtlInfo.contactNumber = contactNumber;
       checkTurtlInfo.socialMediaLinks = obj;
       checkTurtlInfo.googleMap = googleMap;
+      
+
       await checkTurtlInfo.save();
+
       return res
         .status(200)
         .send({ status: true, message: "Turtl Info updated" });

@@ -20,6 +20,24 @@ let turtlInfoSchema = new mongoose.Schema(
       },
     ],
 
+    subsidiaryAddress: [{
+      city: {
+        type: String,
+      },
+
+      state: {
+        type: String
+      },
+
+      country: {
+        type: String
+      },
+
+      address: {
+        type: String
+      }
+    }],
+
     googleMap: { type: String },
   },
   { timestamps: true }

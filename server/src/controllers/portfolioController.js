@@ -29,11 +29,17 @@ const addPortfolio = async (req, res) => {
     //     return res.status(400).send({ status: false, message: 'Title is required'})
     // }
 
+    let obj1 = JSON.parse(portfolioField);
+    // console.log('Hello example', obj1.length);
+    if (!obj1.field) {
+      return res.status(400).send({ status: false, message : 'Portfolio field is required'})
+    }
+
     let portfolioData = {
-      
       description,
       portfolioField,
     };
+
 
     let key = Math.random().toString(36).slice(2,8);
     portfolioData.title = title;
@@ -52,7 +58,7 @@ const addPortfolio = async (req, res) => {
 
     portfolioData.seoData = JSON.parse(data.seoData);
 
-    let obj1 = JSON.parse(portfolioField);
+    
     portfolioData.portfolioField = obj1.field;
     portfolioData.categoryTitle = obj1.categoryName;
 
