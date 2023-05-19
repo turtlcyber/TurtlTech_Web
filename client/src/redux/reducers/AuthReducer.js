@@ -78,9 +78,37 @@ export const userAuthObj = (state=userInfo, action) => {
 export const fileManagerOpenClose = (state=false, action) => {
    switch(action.type){
       case ActionType.ADMIN_FILEMANAGER_OPEN :
-         return true;
+         state = true;
+         return state;
       case ActionType.ADMIN_FILEMANAGER_CLOSE :
-         return false;
-      default: return false;
+         state = false;
+         return state;
+      default: return state;
+   }
+}
+
+export const SpinnerOpenClose = (state=false, action) => {
+   switch(action.type){
+      case ActionType.SPINNER_OPEN :
+         state = true;
+         return state;
+      case ActionType.SPINNER_CLOSE :
+         state = false;
+         return state;
+      default: return state;
+   }
+}
+
+
+export const companyInfoFetchLost = (state = {}, action) => {
+   
+   switch(action.type){
+      case ActionType.COMPANY_INFO_FETCH :
+         state = action.payload;
+         return state;
+      case ActionType.COMPANY_INFO_LOST :
+         state = {};
+         return state;
+      default: return state;
    }
 }

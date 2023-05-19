@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { getAllFaqApi, getPageImagesByPageName } from "../apis/Apis";
+import {
+   getAllFaqApi,
+   getPageImagesByPageName,
+   getSeoByPageName,
+} from "../apis/Apis";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const FAQ = () => {
    const [listOfFaq, setListOfFaq] = useState([]);
    const [filterFaq, setFilterFaq] = useState([]);
    const [coverImage, setCoverImage] = useState({ url: "", alt: "" });
-
+   const [seoDataFromServer, setSeoDataFromServer] = useState({});
    const getAllFaq = () => {
       getAllFaqApi()
          .then((res) => {
@@ -37,33 +42,131 @@ const FAQ = () => {
          // console.log(arr);
       }
    };
-
+   const getSEOdata = () => {
+      getSeoByPageName("FAQ")
+         .then((res) => {
+            console.log(res.data.data);
+            setSeoDataFromServer(res.data.data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
    useEffect(() => {
       getCoverImageByPageName();
       getAllFaq();
+      getSEOdata();
    }, []);
    return (
       <div className="mt-5">
+         <Helmet>
+            <title>
+               {seoDataFromServer.seoData
+                  ? seoDataFromServer.seoData.pageTitle
+                  : "FAQ"}
+            </title>
+
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageTitle && (
+                  <meta
+                     name="title"
+                     property="og:title"
+                     content={seoDataFromServer.seoData.pageTitle}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageDescription && (
+                  <meta
+                     name="description"
+                     property="og:description"
+                     content={seoDataFromServer.seoData.pageDescription}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageKeywords && (
+                  <meta
+                     name="keywords"
+                     property="og:keywords"
+                     content={seoDataFromServer.seoData.pageKeywords}
+                  />
+               )}
+            {seoDataFromServer.seoData && seoDataFromServer.seoData.pageUrl && (
+               <meta
+                  name="url"
+                  property="og:url"
+                  content={seoDataFromServer.seoData.pageUrl}
+               />
+            )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.siteName && (
+                  <meta
+                     name="site_name"
+                     property="og:site_name"
+                     content={seoDataFromServer.seoData.siteName}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageUrl && (
+                  <meta
+                     name="image"
+                     property="og:image"
+                     content={seoDataFromServer.seoData.imageUrl}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageUrl && (
+                  <meta property="og:image:type" content="image/png" />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageWidth && (
+                  <meta
+                     property="og:image:width"
+                     content={seoDataFromServer.seoData.imageWidth}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageHight && (
+                  <meta
+                     property="og:image:height"
+                     content={seoDataFromServer.seoData.imageHight}
+                  />
+               )}
+         </Helmet>
          <div>
-            <div style={{ position: "relative", height: "100%", maxHeight:'900px', overflow:'hidden' }}>
+            <div
+               style={{
+                  position: "relative",
+                  height: "100%",
+                  maxHeight: "900px",
+                  overflow: "hidden",
+                  zIndex: 1000,
+               }}
+            >
                <div className="coverImageTextDiv">
-               <div class="container">
-               <div class="hero-text-area centerd">
-                  <h1 class="hero-title  wow fadeInUp" data-wow-delay=".2s" style={{fontSize:'4rem', fontWeight:'bold'}}>
-                     Frequently Ask Questions
-                  </h1>
-                  <nav aria-label="breadcrumb ">
-                     <ul class="breadcrumb wow fadeInUp" data-wow-delay=".6s">
-                        <li class="breadcrumb-item">
-                           <Link class="breadcrumb-link" to="/faq">
-                              <i class="bi bi-house icon "></i>home
-                           </Link>
-                        </li>
-                        <li class="breadcrumb-item active">faq</li>
-                     </ul>
-                  </nav>
-               </div>
-            </div>
+                  <div class="container">
+                     <div class="hero-text-area centerd">
+                        <h1
+                           class="hero-title  wow fadeInUp"
+                           data-wow-delay=".2s"
+                           style={{ fontSize: "4rem", fontWeight: "bold" }}
+                        >
+                           Frequently Ask Questions
+                        </h1>
+                        <nav aria-label="breadcrumb ">
+                           <ul
+                              class="breadcrumb wow fadeInUp"
+                              data-wow-delay=".6s"
+                           >
+                              <li class="breadcrumb-item">
+                                 <Link class="breadcrumb-link" to="/faq">
+                                    <i class="bi bi-house icon "></i>home
+                                 </Link>
+                              </li>
+                              <li class="breadcrumb-item active">faq</li>
+                           </ul>
+                        </nav>
+                     </div>
+                  </div>
                </div>
                <div className="coverImageOverlayDiv"></div>
                <img
@@ -73,7 +176,6 @@ const FAQ = () => {
                   alt={coverImage.alt}
                   style={{ objectFit: "cover" }}
                />
-              
             </div>
          </div>
 

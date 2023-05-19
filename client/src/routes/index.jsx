@@ -24,7 +24,7 @@ const MainRoute = () => {
             <Route path="/contact" element={<Contact/>} />
            <Route path="/sales" element={<TalkToSales/>}/>
            <Route path="/faq" element={<FAQ/>}/>
-           <Route path="/services/:id" element={<ServicesDetails/>}/>
+           <Route path="/services/:slug" element={<ServicesDetails/>}/>
         </Routes>
     </div>
   )

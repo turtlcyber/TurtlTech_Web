@@ -67,3 +67,28 @@ export const filemanagerClose = () => {
       type: ActionType.ADMIN_FILEMANAGER_CLOSE,
    }
 }
+
+export const SpinnerClose = () => {
+   return {
+      type: ActionType.SPINNER_CLOSE,
+   }
+}
+
+export const SpinnerOpen = () => {
+   return {
+      type: ActionType.SPINNER_OPEN,
+   }
+}
+
+
+export const companyInfoFetch = (data) => {
+   return {
+      type: ActionType.COMPANY_INFO_FETCH,
+      payload:data,
+   }
+}
+export const companyInfoLost= () => {
+   return {
+      type: ActionType.COMPANY_INFO_LOST,
+   }
+}

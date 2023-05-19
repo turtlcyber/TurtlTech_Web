@@ -5,11 +5,13 @@ import NoImage from "../../assets/images/NoImage.jpg";
 import { getAllImages, uploadImageFn } from "../../apis/Apis";
 import { CgCloseR } from "react-icons/cg";
 import {useDispatch, useSelector} from 'react-redux';
-import { filemanagerClose } from "../../redux/R_Action";
+import { SpinnerClose, SpinnerOpen, filemanagerClose } from "../../redux/R_Action";
 const FileManager = () => {
    let ipAddress = "192.168.1.218";
    let port = 4001;
    const [images, setImages] = useState([]);
+   const [filteredImages, setFilteredImages] = useState([]);
+   const [menuColor, setMenuColor] = useState('ALL');
    const [uploadData, setUploadData] = useState({
       images: "",
       imgField: "",
@@ -25,12 +27,13 @@ const FileManager = () => {
       return arr;
    };
 
-   const uploadImage = () => {
+   const uploadImage = async () => {
       console.log(uploadData);
       let formData = new FormData();
       formData.append("imgField", uploadData.imgField);
       formData.append("images", uploadData.images, uploadData.images.name);
-      uploadImageFn(formData)
+      dispatch(SpinnerOpen());
+      await uploadImageFn(formData)
          .then((res) => {
             console.log(res.data);
             fetchAllImage();
@@ -41,48 +44,71 @@ const FileManager = () => {
          })
          .catch((err) => {
             console.log(err);
+      dispatch(SpinnerClose());
+
          });
    };
-   const fetchAllImage = () => {
-      getAllImages()
+   const fetchAllImage = async() => {
+      dispatch(SpinnerOpen());
+      setMenuColor('ALL');
+      await getAllImages()
          .then((res) => {
             console.log(res.data);
             setImages(res.data.data);
+            setFilteredImages(res.data.data);
+            dispatch(SpinnerClose());
          })
          .catch((err) => {
             console.log(err);
+            dispatch(SpinnerClose());
          });
    };
+   const filterImage = (enms) => {
+      setMenuColor(enms);
+      if (enms === "ALL") {
+         setFilteredImages(images);
+      } else {
+         let arr = images.filter((curr, idx, arr) => {
+            return curr.imgField === enms;
+         });
+         setFilteredImages(arr);
+      }
+   }
 
    useEffect(() => {
       fetchAllImage();
    }, []);
    return (
       <div
-         className="position-absolute"
+         className="position-fixed"
          style={{
-            display: `${fileManagerOpenClose ? 'block':'none'}`,
             backgroundColor: "rgba(0,0,0, 0.5)",
             height: "100%",
             width: "100%",
             zIndex: 1000,
          }}
       >
-         <div className="row w-75 mx-auto mt-5" style={{ height: "50%" }}>
+         <div className="row w-75 mx-auto mt-5" style={{ height: "75%" }}>
             <div className="col-3 bg-light border border-end text-start">
                <div className="d-flex justify-content-between align-items-center">
                   <h1>File Manager</h1>
                   <CgCloseR size={50} onClick={() => dispatch(filemanagerClose())} role="button"/>
                </div>
                <ul className="list-group">
-                  <li className="list-group-item" role="button">
+                  <li className={menuColor === 'ALL' ? "list-group-item bg-warning" : "list-group-item"} role="button" onClick={() => filterImage('ALL')}>
                      All Images
                   </li>
-                  <li className="list-group-item" role="button">
+                  <li className={menuColor === 'BLOG' ? "list-group-item bg-warning" : "list-group-item"} role="button" onClick={() => filterImage('BLOG')}>
                      Blog Images
                   </li>
-                  <li className="list-group-item" role="button">
+                  <li className={menuColor === 'CERTIFICATE' ? "list-group-item bg-warning" : "list-group-item"} role="button" onClick={() => filterImage('CERTIFICATE')}>
                      Certificates
+                  </li>
+                  <li className={menuColor === 'EVENTS' ? "list-group-item bg-warning" : "list-group-item"} role="button" onClick={() => filterImage('EVENTS')}>
+                     Events
+                  </li>
+                  <li className={menuColor === 'ICONS' ? "list-group-item bg-warning" : "list-group-item"} role="button" onClick={() => filterImage('ICONS')}>
+                     Icons
                   </li>
                </ul>
             </div>
@@ -128,6 +154,7 @@ const FileManager = () => {
                         <option value="PORTFOLIO">Portfolio</option>
                         <option value="CERTIFICATE">Certificate</option>
                         <option value="EVENTS">Events</option>
+                        <option value="ICONS">Icons</option>
                      </select>
                      <button
                         className={
@@ -144,7 +171,7 @@ const FileManager = () => {
                </div>
 
                <div className="row  row-cols-4 ">
-                  {images.map((el, i) => (
+                  {filteredImages.map((el, i) => (
                      <div
                         className="col g-2"
                         style={{

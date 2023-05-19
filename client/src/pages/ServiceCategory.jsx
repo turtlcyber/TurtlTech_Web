@@ -6,7 +6,7 @@ import Parser from 'html-react-parser';
 import { portfolioBySlugApi } from "../apis/Apis";
 
 
-const ServicesDetails = () => {
+const ServiceCategory = () => {
   let params = useParams();
   const [portfolio, setPortfolio] = useState(null);
 
@@ -95,4 +95,4 @@ const ServicesDetails = () => {
   );
 };
 
-export default ServicesDetails;
+export default ServiceCategory;

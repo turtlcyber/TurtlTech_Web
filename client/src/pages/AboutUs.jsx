@@ -12,7 +12,7 @@ import visionImage from "../assets/img/3.png";
 import { Helmet } from "react-helmet";
 import Testimonials from "../components/Testimonials";
 import Carousel from "carousel-react-rcdev";
-import { getPageImagesByPageName } from "../apis/Apis";
+import { getPageImagesByPageName, getSeoByPageName } from "../apis/Apis";
 import { Link } from "react-router-dom";
 
 const slideWidth = 30;
@@ -88,6 +88,7 @@ const data1 = [
 const AboutUs = () => {
    const [testimonialData, setTestimonial] = useState([]);
    const [coverImage, setCoverImage] = useState({ url: "", alt: "" });
+   const [seoDataFromServer, setSeoDataFromServer] = useState({});
    const getCoverImageByPageName = () => {
       getPageImagesByPageName("ABOUTUS").then((res) => {
          setCoverImage({
@@ -96,13 +97,91 @@ const AboutUs = () => {
          });
       });
    };
+   const getSEOdata = () => {
+      getSeoByPageName("ABOUTUS")
+         .then((res) => {
+            console.log(res.data.data);
+            setSeoDataFromServer(res.data.data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
    useEffect(() => {
       getCoverImageByPageName();
+      getSEOdata();
    }, []);
    return (
       <div>
          <Helmet>
-            <title>About Us</title>
+            
+            <title>{seoDataFromServer.seoData ? seoDataFromServer.seoData.pageTitle : 'About us'}</title>
+               
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageTitle && (
+                  <meta
+                     name="title"
+                     property="og:title"
+                     content={seoDataFromServer.seoData.pageTitle}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageDescription && (
+                  <meta
+                     name="description"
+                     property="og:description"
+                     content={seoDataFromServer.seoData.pageDescription}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.pageKeywords && (
+                  <meta
+                     name="keywords"
+                     property="og:keywords"
+                     content={seoDataFromServer.seoData.pageKeywords}
+                  />
+               )}
+            {seoDataFromServer.seoData && seoDataFromServer.seoData.pageUrl && (
+               <meta
+                  name="url"
+                  property="og:url"
+                  content={seoDataFromServer.seoData.pageUrl}
+               />
+            )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.siteName && (
+                  <meta
+                     name="site_name"
+                     property="og:site_name"
+                     content={seoDataFromServer.seoData.siteName}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageUrl && (
+                  <meta
+                     name="image"
+                     property="og:image"
+                     content={seoDataFromServer.seoData.imageUrl}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageUrl && (
+                  <meta property="og:image:type" content="image/png" />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageWidth && (
+                  <meta
+                     property="og:image:width"
+                     content={seoDataFromServer.seoData.imageWidth}
+                  />
+               )}
+            {seoDataFromServer.seoData &&
+               seoDataFromServer.seoData.imageHight && (
+                  <meta
+                     property="og:image:height"
+                     content={seoDataFromServer.seoData.imageHight}
+                  />
+               )}
          </Helmet>
          <section
             

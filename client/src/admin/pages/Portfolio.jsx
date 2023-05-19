@@ -1,13 +1,7 @@
-import React, { useState } from "react";
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import NewBlogSec from "../components/NewBlogSec";
-import BlogComp from "../components/BlogComp";
-import ReactQuill from "react-quill";
 import { Editor } from "@tinymce/tinymce-react";
-import "react-quill/dist/quill.snow.css";
-import Parser from "html-react-parser";
-import { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Parser from "html-react-parser";
 import {
    SpinnerClose,
    SpinnerOpen,
@@ -15,28 +9,38 @@ import {
    blogModelOpenFn,
    filemanagerOpen,
 } from "../../redux/R_Action";
-import { blogPost } from "../../apis/Apis";
+import BlogComp from "../components/BlogComp";
+import { getAllServiceCategoryApi, portfolioPostApi } from "../../apis/Apis";
 const initial = {
-   blogTitle: "",
+   portfolioTitle: "",
    tags: "",
    description: "",
-   sections: [],
+   content: "",
 };
 
-const CreateBlog = () => {
-   const handle = useFullScreenHandle();
+const Portfolio = () => {
    const [editorKey, setEditorKey] = React.useState(4);
    const [isImageUrlBoxOpen, setIsImageBoxOpen] = useState(false);
+   const [portfolioField, setPortfolioField] = useState("");
    const [coverImage, setCoverImage] = useState({
       url: "",
       alt: "",
       isPreview: false,
    });
-   const [value, setValue] = useState("");
-   const [editBlog, setEditBlog] = useState({ idx: null, data: "" });
-   const [tempImg, setTempImg] = useState();
-   const [blogData, setBlogData] = useState(initial);
-   const [section, setSection] = useState("");
+   const [editPortfolio, setEditPortfolio] = useState({ idx: null, data: "" });
+
+   const [portfolioData, setPortfolioData] = useState(initial);
+   const [categoryDropDown,setCategoryDropDown] = useState([]);
+   const getData = async () => {
+      await getAllServiceCategoryApi()
+      .then((res) => {
+            console.log(res.data.data);
+            setCategoryDropDown(res.data.data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
    const editorRef = useRef(null);
    const dispatch = useDispatch();
    const state = useSelector((state) => state);
@@ -45,28 +49,18 @@ const CreateBlog = () => {
       setEditorKey(newKey);
    };
    const demo = () => {
-      console.log(blogData);
+      console.log(portfolioData);
       if (editorRef.current) {
-         let arr = blogData.sections;
-         let obj = {
-            content: editorRef.current.getContent(),
-         };
-         if (tempImg) {
-            obj.img = tempImg;
-         }
-         arr.push(obj);
-         setBlogData((data) => {
-            return { ...data, sections: arr };
+         setPortfolioData((data) => {
+            return { ...data, content: editorRef.current.getContent() };
          });
-         setTempImg(null);
          clearEditor();
-         console.log(editorRef.current.getContent());
       }
    };
 
    const updateSection = (el, idx) => {
       dispatch(blogEditFn(el));
-      // setEditBlog({idx:idx, data:el});
+      // setEditPortfolio({idx:idx, data:el});
       dispatch(blogModelOpenFn());
       console.log(state);
       console.log(el);
@@ -84,106 +78,43 @@ const CreateBlog = () => {
          });
       }
    };
-   const saveBlog = async () => {
+   const savePortfolio = async () => {
       const form = new FormData();
-      form.append("blogTitle", blogData.blogTitle);
-      form.append("description", blogData.description);
-      form.append("coverImgUrl", coverImage.url);
-      form.append("coverImgAlt", coverImage.alt);
-      let arr = [];
-      for (let i = 0; i < blogData.sections.length; i++) {
-         let { content } = blogData.sections[i];
-         console.log(content);
-         arr.push(content);
-         // form.append('sections', toString(content));
-         if (blogData.sections[i].img) {
-            form.append(
-               `secImg_${i}`,
-               blogData.sections[i].img,
-               blogData.sections[i].img.name
-            );
-         }
+      console.log(portfolioData);
+
+      if (portfolioField !== "") {
+         form.append("title", portfolioData.portfolioTitle);
+         form.append("description", portfolioData.description);
+         form.append("coverImgUrl", coverImage.url);
+         form.append("coverImgAlt", coverImage.alt);
+         form.append("tags", portfolioData.tags);
+         form.append("content", JSON.stringify(portfolioData.content));
+         form.append("portfolioField", portfolioField);
+         console.log(portfolioData);
+         // dispatch(SpinnerOpen());
+         await portfolioPostApi(form)
+            .then((res) => {
+               console.log(res.data);
+               alert("Portfolio Created Successfully");
+               dispatch(SpinnerClose());
+            })
+            .catch((err) => {
+               console.log(err);
+               dispatch(SpinnerClose());
+            });
+      } else {
+         alert("Portfolio field is mendatory");
       }
-
-      form.append("tags", blogData.tags);
-      form.append("sections", JSON.stringify(arr));
-      console.log(JSON.stringify(arr));
-      console.log(blogData);
-      console.log(coverImage.url);
-      console.log(form.getAll("coverImgUrl"));
-      dispatch(SpinnerOpen());
-      await blogPost(form)
-         .then((res) => {
-            console.log(res.data);
-            alert("Blog Created Successfully");
-            dispatch(SpinnerClose());
-         })
-         .catch((err) => {
-            console.log(err);
-            dispatch(SpinnerClose());
-         });
    };
-
+   useEffect(() => {
+      getData();
+   },[])
    return (
       <React.Fragment>
-         <BlogComp element={editBlog} />
-         <div className="row" style={{ backgroundColor: "white", height: "100%" }}>
-            {/* <div className="row align-items-start">
-                  <div className="col" style={{ textAlign: "start" }}>
-                     <div className="d-flex align-items-center">
-                        <img
-                           src={require("../../assets/img/logo1-removebg-preview.png")}
-                           height={34}
-                           alt="turtltech"
-                        />
-                        <h4
-                           className="mt-2"
-                           style={{
-                              fontFamily: "Noto Sans, sans-serif",
-                              fontSize: "23px",
-                              fontWeight: 800,
-                           }}
-                        >
-                           TurtlTech.com
-                        </h4>
-                     </div>
-                  </div>
-                  <div className="col m-2">
-                     <div
-                        className="btn-group"
-                        role="group"
-                        aria-label="Basic mixed styles example"
-                     >
-                     <button
-                           type="button"
-                           className="btn btn-light border fw-bold"
-                           onClick={() => dispatch(filemanagerOpen())}
-                        >
-                           &nbsp; File Manager &nbsp;
-                        </button>
-                        <button
-                           type="button"
-                           className="btn btn-danger fw-bold"
-                        >
-                           &nbsp; Edit &nbsp;
-                        </button>
-                        <button
-                           type="button"
-                           className="btn btn-warning fw-bold"
-                        >
-                           Preview
-                        </button>
-                        <button
-                           type="button"
-                           className="btn btn-secondary fw-bold"
-                           onClick={() => saveBlog()}
-                        >
-                           Publish
-                        </button>
-                     </div>
-                  </div>
-               </div> */}
-
+         <div
+            className="row"
+            style={{ backgroundColor: "white", height: "100%" }}
+         >
             <div className="col-10">
                <div
                   className="border border-2 rounded-4"
@@ -269,10 +200,13 @@ const CreateBlog = () => {
                      <textarea
                         placeholder="New post title here..."
                         rows={1}
-                        value={blogData.blogTitle}
+                        value={portfolioData.portfolioTitle}
                         onChange={(e) =>
-                           setBlogData((data) => {
-                              return { ...data, blogTitle: e.target.value };
+                           setPortfolioData((data) => {
+                              return {
+                                 ...data,
+                                 portfolioTitle: e.target.value,
+                              };
                            })
                         }
                         style={{
@@ -294,16 +228,16 @@ const CreateBlog = () => {
                         }}
                         placeholder="Add multiple tags and tags start with # sign"
                         onChange={(e) =>
-                           setBlogData((data) => {
+                           setPortfolioData((data) => {
                               return { ...data, tags: e.target.value };
                            })
                         }
                      ></textarea>
                      <textarea
                         rows={3}
-                        value={blogData.description}
+                        value={portfolioData.description}
                         onChange={(e) =>
-                           setBlogData((data) => {
+                           setPortfolioData((data) => {
                               return {
                                  ...data,
                                  description: e.target.value,
@@ -321,20 +255,10 @@ const CreateBlog = () => {
                         placeholder="Description..."
                      ></textarea>
                      <div className="text-start my-2">
-                        {blogData.sections.map((el, idx) => (
-                           <>
-                              <button
-                                 className="btn btn-warning"
-                                 onClick={() => updateSection(el, idx)}
-                              >
-                                 Edit
-                              </button>
-                              {Parser(el.content)}
-                              {el.img && (
-                                 <img src={URL.createObjectURL(el.img)} />
-                              )}
-                           </>
-                        ))}
+                        {Parser(portfolioData.content)}
+                        {portfolioData.content && (
+                           <button className="btn btn-warning">Edit</button>
+                        )}
                      </div>
                      <Editor
                         key={editorKey}
@@ -393,10 +317,25 @@ const CreateBlog = () => {
                   <button
                      type="button"
                      className="btn btn-secondary fw-bold"
-                     onClick={() => saveBlog()}
+                     onClick={() => savePortfolio()}
                   >
                      Publish
                   </button>
+                  <select
+                     class="form-select"
+                     aria-label="Default select example"
+                     value={portfolioField}
+                     onChange={(e) => setPortfolioField(e.target.value)}
+                  >
+                     <option value="">Select Portfolio Category</option>
+                     {
+                        categoryDropDown.map((el,i) => (
+
+                           <option key={el._id} value={el.slug}>{el.title}</option>
+                        ))
+                     }
+
+                  </select>
                </div>
             </div>
          </div>
@@ -404,4 +343,4 @@ const CreateBlog = () => {
    );
 };
 
-export default CreateBlog;
+export default Portfolio;

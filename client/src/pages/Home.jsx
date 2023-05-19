@@ -27,6 +27,7 @@ import { Link } from "react-router-dom";
 import PortfolioTabCard from "../components/PortfolioTabCard";
 import Testimonials from "../components/Testimonials";
 import {
+   allAllPortfoliosApi,
    getAllCertificateApi,
    getAllSeosApi,
    getAllTestimonialApi,
@@ -94,6 +95,7 @@ const Home = () => {
          portfolioField: "Cyber Security",
       },
    ];
+   const [portfolios, setPortfolios] = useState([]);
 
    const getAllCertificate = () => {
       getAllCertificateApi()
@@ -128,10 +130,28 @@ const Home = () => {
          });
    };
 
+   const getAllPortfolio = async () => {
+      await allAllPortfoliosApi()
+         .then((res) => {
+            setPortfolios(res.data.data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
+   const openBLog = (slug) => {
+      history(`/blog/${slug}`);
+      console.log(slug);
+   };
+   const openPortfolio = (slug) => {
+      history(`/services/${slug}`);
+      console.log(slug);
+   };
    useEffect(() => {
       getAllCertificate();
       getAllTestimonial();
       getSEOdata();
+      getAllPortfolio();
    }, []);
    return (
       <div>
@@ -785,24 +805,26 @@ const Home = () => {
                   {}
                   <Tab className="portfolio-btn" eventKey="ALL" title="ALL">
                      <div className="row">
-                        {arrData.map((el, i) => (
+                        {portfolios.map((el, i) => (
                            <PortfolioTabCard
-                              image={el.image}
-                              title={el.title}
+                              image={el.coverImage.coverImgUrl}
+                              title={el.coverImage.coverImgAlt}
+                              slug={el.slug}
                            />
                         ))}
                      </div>
                   </Tab>
-                  {[...new Set(arrData.map((el) => el.portfolioField))].map(
+                  {[...new Set(portfolios.map((el) => el.portfolioField))].map(
                      (el, i) => (
                         <Tab className="portfolio-btn" eventKey={el} title={el}>
                            <div className="row">
-                              {arrData
+                              {portfolios
                                  .filter((curr) => curr.portfolioField === el)
                                  .map((el, i) => (
                                     <PortfolioTabCard
-                                       image={el.image}
-                                       title={el.title}
+                                       image={el.coverImage.coverImgUrl}
+                                       title={el.coverImage.coverImgAlt}
+                                       slug={el.slug}
                                     />
                                  ))}
                            </div>

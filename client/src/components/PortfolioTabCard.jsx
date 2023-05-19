@@ -1,10 +1,16 @@
 import React from "react";
 import NoImage from "../assets/images/NoImage.jpg";
-const PortfolioTabCard = ({ image, title }) => {
+import { useNavigate } from "react-router-dom";
+const PortfolioTabCard = ({ image, title, slug }) => {
+   const history = useNavigate();
+   const openPortfolio = (slug) => {
+      history(`/services/${slug}`);
+      console.log(slug);
+   };
    return (
       <div className="col-12 col-md-6 col-lg-4 portfolio-item mobile">
          <div className="item">
-            <a className="portfolio-img-link" href="services-turtl.html">
+            <a className="portfolio-img-link" onClick={() => openPortfolio(slug)}>
                <img
                   className="portfolio-img img-fluid"
                   loading="lazy"

@@ -18,8 +18,11 @@ import {
 import axios from "axios";
 import exampleImg from "../../assets/images/open_graph_tags.png";
 import NoImage from "../../assets/images/NoImage.jpg";
+import { useDispatch } from "react-redux";
+import { SpinnerClose, SpinnerOpen } from "../../redux/R_Action";
 
 const TurtlsInfo = () => {
+   const dispatch = useDispatch();
    const [seoPage, setSeoPage] = useState("");
    const [seoData, setSeoData] = useState({
       pageTitle: "",
@@ -54,7 +57,8 @@ const TurtlsInfo = () => {
       }
    };
 
-   const seoDataSave = () => {
+   const seoDataSave = async () => {
+      
       let data = { pageName: seoPage };
       let dataSeo = {};
       if (seoData.pageTitle) {
@@ -85,12 +89,29 @@ const TurtlsInfo = () => {
          dataSeo.imageWidth = seoData.imageWidth;
       }
       data.seoData = dataSeo;
-      saveTurtlSeoDataApi(data)
+      dispatch(SpinnerOpen());
+      await saveTurtlSeoDataApi(data)
          .then((res) => {
             console.log(res.data);
+            alert(res.data.message)
+            setSeoData({
+               pageTitle: "",
+               pageDescription: "",
+               pageKeywords: "",
+               pageUrl: "",
+               imageUrl: "",
+               siteName: "",
+               altImageText: "",
+               imageHight: "",
+               imageWidth: "",
+            });
+            setSeoPage("");
+      dispatch(SpinnerClose());
          })
          .catch((err) => {
             console.log(err);
+            alert(err.response.data.message);
+      dispatch(SpinnerClose());
          });
    };
 
@@ -110,6 +131,7 @@ const TurtlsInfo = () => {
          formData.append("contactNumber", companyInfo.contact2);
       }
       console.log(companyInfo);
+      dispatch(SpinnerOpen());
       await saveCompanyInfoApi(formData)
          .then((res) => {
             console.log(res.data);
@@ -125,23 +147,28 @@ const TurtlsInfo = () => {
                url: "",
                type: "",
             });
+      dispatch(SpinnerClose());
          })
          .catch((err) => {
             console.log(err);
             alert(err.response.data.message);
+      dispatch(SpinnerClose());
          });
    };
    const editSeoData = (edit_id) => {
       console.log(edit_id);
-   }
+   };
    const reloadSEOdata = () => {
+      dispatch(SpinnerOpen());
       getAllSeosApi()
          .then((res) => {
             console.log(res.data);
             setSeoDataFromServer(res.data.data);
+            dispatch(SpinnerClose());
          })
          .catch((err) => {
             console.log(err);
+            dispatch(SpinnerClose());
          });
    };
 
@@ -338,6 +365,7 @@ const TurtlsInfo = () => {
                               <option value="HOME">HOME</option>
                               <option value="ABOUTUS">ABOUT US</option>
                               <option value="SERVICES">SERVICES</option>
+                              <option value="BLOG">BLOG</option>
                               <option value="CONTACTUS">CONTACT US</option>
                               <option value="FAQ">FAQ</option>
                            </select>
@@ -560,11 +588,20 @@ const TurtlsInfo = () => {
                      </div>
                      <div className="p-3">
                         {seoDataFromServer.map((el, i) => (
-                           <div key={el._id} onClick={() => editSeoData(el._id)} className="row border mb-2" style={{minHeight:'130px'}}>
+                           <div
+                              key={el._id}
+                              onClick={() => editSeoData(el._id)}
+                              className="row border mb-2"
+                              style={{ minHeight: "130px" }}
+                           >
                               <div className="col-2">
                                  <img
                                     width={"100%"}
-                                    src={el.seoData.imageUrl ? el.seoData.imageUrl : NoImage}
+                                    src={
+                                       el.seoData.imageUrl
+                                          ? el.seoData.imageUrl
+                                          : NoImage
+                                    }
                                  />
                               </div>
                               <div className="col-9 position-relative">

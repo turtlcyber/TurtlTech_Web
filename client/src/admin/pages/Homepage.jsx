@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { filemanagerOpen } from "../../redux/R_Action";
+import {
+   SpinnerClose,
+   SpinnerOpen,
+   filemanagerOpen,
+} from "../../redux/R_Action";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import { CgPlayListAdd } from "react-icons/cg";
@@ -19,7 +23,7 @@ const Homepage = () => {
    const dispatch = useDispatch();
    const { fileManagerOpenClose } = useSelector((state) => state);
    const [listOfCertificate, setListOfCertificate] = useState([]);
-   const [isEditedFaq, setIsEditedFaq] = useState({id:'', flag:false});
+   const [isEditedFaq, setIsEditedFaq] = useState({ id: "", flag: false });
    const [coverImage, setCoverImage] = useState({
       image: "",
       altText: "",
@@ -88,14 +92,17 @@ const Homepage = () => {
             );
          }
 
+         dispatch(SpinnerOpen());
          await saveCertificatelApi(formData)
             .then((res) => {
                setListOfCertificate([]);
                setSingleCertificate({ title: "", image: "" });
                console.log(res.data);
+               dispatch(SpinnerClose());
             })
             .catch((err) => {
                console.log(err);
+               dispatch(SpinnerClose());
             });
       } else {
          alert("Please add atleast One Certificate Url");
@@ -112,21 +119,23 @@ const Homepage = () => {
                JSON.stringify(listOfTestmonial[i])
             );
          }
-
+         dispatch(SpinnerOpen());
          await saveTestimonialApi(formData)
-            .then((res) => {
-               setListOfTestimonial([]);
-               setSingleTestimonial({
-                  image: "",
-                  name: "",
-                  designation: "",
-                  rating: "",
-                  story: "",
-               });
-               console.log(res.data);
+         .then((res) => {
+            setListOfTestimonial([]);
+            setSingleTestimonial({
+               image: "",
+               name: "",
+               designation: "",
+               rating: "",
+               story: "",
+            });
+            console.log(res.data);
+            dispatch(SpinnerClose());
             })
             .catch((err) => {
                console.log(err);
+         dispatch(SpinnerClose());
             });
       } else {
          alert("Please add atleast One Testimonial");
@@ -143,15 +152,18 @@ const Homepage = () => {
          for (let i = 0; i < eventImageList.length; i++) {
             formData.append("images", eventImageList[i]);
          }
+         dispatch(SpinnerOpen());
          await saveEventsApi(formData)
-            .then((res) => {
-               setSingleEventImage("");
-               setEventImageList([]);
-               setSingleEvent({ title: "", story: "" });
-               console.log(res.data);
+         .then((res) => {
+            setSingleEventImage("");
+            setEventImageList([]);
+            setSingleEvent({ title: "", story: "" });
+            console.log(res.data);
+            dispatch(SpinnerClose());
             })
             .catch((err) => {
                console.log(err);
+         dispatch(SpinnerClose());
             });
       }
    };
@@ -162,74 +174,84 @@ const Homepage = () => {
          formData.append("pageName", pagename);
          formData.append("imageUrl", coverImage.image);
          formData.append("altText", coverImage.altText);
-
+         dispatch(SpinnerOpen());
          await savePageImageApi(formData)
-            .then((res) => {
+         .then((res) => {
                console.log(res.data);
                setCoverImage({
                   image: "",
                   altText: "",
                });
+               dispatch(SpinnerClose());
             })
             .catch((err) => {
                console.log(err);
+               dispatch(SpinnerClose());
             });
       }
    };
 
-   const getAllFaqs = async() => {
-     await  getAllFaqApi()
+   const getAllFaqs = async () => {
+      dispatch(SpinnerOpen());
+      await getAllFaqApi()
          .then((res) => {
             console.log(res.data);
             setListOfFaq(res.data.data);
+            dispatch(SpinnerClose());
          })
          .catch((err) => {
             console.log(err);
+            dispatch(SpinnerClose());
          });
    };
    const saveToDatabase = async () => {
-      if(isEditedFaq.flag){
-         updateFaqApi(newFaqData, isEditedFaq.id).then(res => {
-            console.log(res.data);
-            alert('Faq Updated successfully');
-            clearFaqEditing();
-         }).catch(err => {
-            console.log(err);
-            alert('Something went wrong if updating faq data');
-         })
-      }else{
-
-         saveFaqApi(newFaqData)
-         .then((res) => {
-            alert("FAQ Added successfully to database");
-            setNewFaqData({
-               category: "",
-               question: "",
-               answer: "",
+      dispatch(SpinnerOpen());
+      if (isEditedFaq.flag) {
+        await  updateFaqApi(newFaqData, isEditedFaq.id)
+            .then((res) => {
+               console.log(res.data);
+               alert("Faq Updated successfully");
+               clearFaqEditing();
+               dispatch(SpinnerClose());
+            })
+            .catch((err) => {
+               console.log(err);
+               alert("Something went wrong if updating faq data");
+               dispatch(SpinnerClose());
             });
-            getAllFaqs();
-         })
-         .catch((err) => {
-            console.log(err);
-            alert("Something Weng Wrong");
-         });
+      } else {
+        await saveFaqApi(newFaqData)
+            .then((res) => {
+               alert("FAQ Added successfully to database");
+               setNewFaqData({
+                  category: "",
+                  question: "",
+                  answer: "",
+               });
+               getAllFaqs();
+            })
+            .catch((err) => {
+               console.log(err);
+               alert("Something Weng Wrong");
+               dispatch(SpinnerClose());
+            });
       }
       // console.log(newFaqData);
    };
    const clearFaqEditing = () => {
-      setIsEditedFaq({id:'', flag:false});
+      setIsEditedFaq({ id: "", flag: false });
       setNewFaqData({
          category: "",
          question: "",
          answer: "",
       });
-   }
+   };
    const editFaq = (objId) => {
-      setIsEditedFaq({id:objId, flag:true});
-      let a = listOfFaq.find(o => o._id === objId);
+      setIsEditedFaq({ id: objId, flag: true });
+      let a = listOfFaq.find((o) => o._id === objId);
       console.log(a);
       setNewFaqData(a);
-   }
+   };
    useEffect(() => {
       getAllFaqs();
    }, []);
@@ -889,13 +911,23 @@ const Homepage = () => {
                         </button>
                      </div>
                      <hr className="my-5" />
-                     {
-                        isEditedFaq.flag &&
-                     <div className="d-flex justify-content-start mb-2" style={{height:'38px'}}>
-                     <h3 className="my-0"><span class="badge bg-black">Editing</span></h3>
-                     <button type="button" class="btn btn-primary ms-2" onClick={() => clearFaqEditing()}>Cancel</button>
-                     </div>
-                     }
+                     {isEditedFaq.flag && (
+                        <div
+                           className="d-flex justify-content-start mb-2"
+                           style={{ height: "38px" }}
+                        >
+                           <h3 className="my-0">
+                              <span class="badge bg-black">Editing</span>
+                           </h3>
+                           <button
+                              type="button"
+                              class="btn btn-primary ms-2"
+                              onClick={() => clearFaqEditing()}
+                           >
+                              Cancel
+                           </button>
+                        </div>
+                     )}
                      <select
                         class="form-select mb-3"
                         aria-label="Default select example"
@@ -948,10 +980,16 @@ const Homepage = () => {
                      ></textarea>
 
                      <button
-                        className={isEditedFaq.flag ? "btn btn-warning" : 'btn btn-primary'}
+                        className={
+                           isEditedFaq.flag
+                              ? "btn btn-warning"
+                              : "btn btn-primary"
+                        }
                         onClick={() => saveToDatabase()}
                      >
-                        {isEditedFaq.flag ? 'Update Edited' : 'Save To Database'}
+                        {isEditedFaq.flag
+                           ? "Update Edited"
+                           : "Save To Database"}
                      </button>
                   </div>
                   <div className="col-7 text-start">
@@ -968,7 +1006,12 @@ const Homepage = () => {
                                     aria-controls={`collaps_${el._id}`}
                                  >
                                     {el.question}
-                                    <span class="badge bg-secondary fw-light ms-3" style={{fontSize:"16px"}}>{(el.category).replace('_'," ")}</span>
+                                    <span
+                                       class="badge bg-secondary fw-light ms-3"
+                                       style={{ fontSize: "16px" }}
+                                    >
+                                       {el.category.replace("_", " ")}
+                                    </span>
                                  </button>
                               </h2>
                               <div
@@ -978,8 +1021,13 @@ const Homepage = () => {
                               >
                                  <div class="accordion-body">
                                     {el.answer}
-                                    <br/>
-                                    <button className="btn btn-danger mt-2" onClick={() => editFaq(el._id)}>Edit</button>
+                                    <br />
+                                    <button
+                                       className="btn btn-danger mt-2"
+                                       onClick={() => editFaq(el._id)}
+                                    >
+                                       Edit
+                                    </button>
                                  </div>
                               </div>
                            </div>

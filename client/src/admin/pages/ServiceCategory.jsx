@@ -1,189 +1,86 @@
-import React, { useState } from "react";
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import NewBlogSec from "../components/NewBlogSec";
-import BlogComp from "../components/BlogComp";
-import ReactQuill from "react-quill";
 import { Editor } from "@tinymce/tinymce-react";
-import "react-quill/dist/quill.snow.css";
-import Parser from "html-react-parser";
-import { useRef } from "react";
+import HTMLReactParser from "html-react-parser";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-   SpinnerClose,
-   SpinnerOpen,
-   blogEditFn,
-   blogModelOpenFn,
-   filemanagerOpen,
-} from "../../redux/R_Action";
-import { blogPost } from "../../apis/Apis";
+import { SpinnerClose, SpinnerOpen, filemanagerOpen } from "../../redux/R_Action";
+import { getAllServiceCategoryApi, saveServiceCategoryApi } from "../../apis/Apis";
 const initial = {
-   blogTitle: "",
+   title: "",
    tags: "",
    description: "",
-   sections: [],
+   content: "",
 };
 
-const CreateBlog = () => {
-   const handle = useFullScreenHandle();
-   const [editorKey, setEditorKey] = React.useState(4);
+const ServiceCategory = () => {
+   const [servcieCategory, setServiceCategory] = useState(initial);
    const [isImageUrlBoxOpen, setIsImageBoxOpen] = useState(false);
-   const [coverImage, setCoverImage] = useState({
+   const [editorKey, setEditorKey] = React.useState(4);
+   const editorRef = useRef(null);
+   const dispatch = useDispatch();
+   const [icon, setIcon] = useState({
       url: "",
       alt: "",
       isPreview: false,
    });
-   const [value, setValue] = useState("");
-   const [editBlog, setEditBlog] = useState({ idx: null, data: "" });
-   const [tempImg, setTempImg] = useState();
-   const [blogData, setBlogData] = useState(initial);
-   const [section, setSection] = useState("");
-   const editorRef = useRef(null);
-   const dispatch = useDispatch();
    const state = useSelector((state) => state);
    const clearEditor = () => {
       const newKey = editorKey * 43;
       setEditorKey(newKey);
    };
    const demo = () => {
-      console.log(blogData);
+      console.log(servcieCategory);
       if (editorRef.current) {
-         let arr = blogData.sections;
-         let obj = {
-            content: editorRef.current.getContent(),
-         };
-         if (tempImg) {
-            obj.img = tempImg;
-         }
-         arr.push(obj);
-         setBlogData((data) => {
-            return { ...data, sections: arr };
+         setServiceCategory((data) => {
+            return { ...data, content: editorRef.current.getContent() };
          });
-         setTempImg(null);
          clearEditor();
-         console.log(editorRef.current.getContent());
       }
    };
 
-   const updateSection = (el, idx) => {
-      dispatch(blogEditFn(el));
-      // setEditBlog({idx:idx, data:el});
-      dispatch(blogModelOpenFn());
-      console.log(state);
-      console.log(el);
-      // console.log(idx);
-   };
    const coverHandler = () => {
       setIsImageBoxOpen(false);
-      if (coverImage.url === "") {
-         setCoverImage((old) => {
+      if (icon.url === "") {
+         setIcon((old) => {
             return { ...old, isPreview: false };
          });
       } else {
-         setCoverImage((old) => {
+         setIcon((old) => {
             return { ...old, isPreview: true };
          });
       }
    };
-   const saveBlog = async () => {
+  
+   const saveServCate = async () => {
       const form = new FormData();
-      form.append("blogTitle", blogData.blogTitle);
-      form.append("description", blogData.description);
-      form.append("coverImgUrl", coverImage.url);
-      form.append("coverImgAlt", coverImage.alt);
-      let arr = [];
-      for (let i = 0; i < blogData.sections.length; i++) {
-         let { content } = blogData.sections[i];
-         console.log(content);
-         arr.push(content);
-         // form.append('sections', toString(content));
-         if (blogData.sections[i].img) {
-            form.append(
-               `secImg_${i}`,
-               blogData.sections[i].img,
-               blogData.sections[i].img.name
-            );
-         }
-      }
+      console.log(servcieCategory);
 
-      form.append("tags", blogData.tags);
-      form.append("sections", JSON.stringify(arr));
-      console.log(JSON.stringify(arr));
-      console.log(blogData);
-      console.log(coverImage.url);
-      console.log(form.getAll("coverImgUrl"));
+      form.append("title", servcieCategory.title);
+      form.append("description", servcieCategory.description);
+      form.append("iconUrl", icon.url);
+      form.append("iconAlt", icon.alt);
+      form.append("tags", servcieCategory.tags);
+      form.append("content", JSON.stringify(servcieCategory.content));
+      console.log(servcieCategory);
+      console.log(icon);
       dispatch(SpinnerOpen());
-      await blogPost(form)
+      await saveServiceCategoryApi(form)
          .then((res) => {
             console.log(res.data);
-            alert("Blog Created Successfully");
+            alert("Portfolio Created Successfully");
             dispatch(SpinnerClose());
          })
          .catch((err) => {
             console.log(err);
+            alert(err.response.data.message);
             dispatch(SpinnerClose());
          });
    };
-
    return (
       <React.Fragment>
-         <BlogComp element={editBlog} />
-         <div className="row" style={{ backgroundColor: "white", height: "100%" }}>
-            {/* <div className="row align-items-start">
-                  <div className="col" style={{ textAlign: "start" }}>
-                     <div className="d-flex align-items-center">
-                        <img
-                           src={require("../../assets/img/logo1-removebg-preview.png")}
-                           height={34}
-                           alt="turtltech"
-                        />
-                        <h4
-                           className="mt-2"
-                           style={{
-                              fontFamily: "Noto Sans, sans-serif",
-                              fontSize: "23px",
-                              fontWeight: 800,
-                           }}
-                        >
-                           TurtlTech.com
-                        </h4>
-                     </div>
-                  </div>
-                  <div className="col m-2">
-                     <div
-                        className="btn-group"
-                        role="group"
-                        aria-label="Basic mixed styles example"
-                     >
-                     <button
-                           type="button"
-                           className="btn btn-light border fw-bold"
-                           onClick={() => dispatch(filemanagerOpen())}
-                        >
-                           &nbsp; File Manager &nbsp;
-                        </button>
-                        <button
-                           type="button"
-                           className="btn btn-danger fw-bold"
-                        >
-                           &nbsp; Edit &nbsp;
-                        </button>
-                        <button
-                           type="button"
-                           className="btn btn-warning fw-bold"
-                        >
-                           Preview
-                        </button>
-                        <button
-                           type="button"
-                           className="btn btn-secondary fw-bold"
-                           onClick={() => saveBlog()}
-                        >
-                           Publish
-                        </button>
-                     </div>
-                  </div>
-               </div> */}
-
+         <div
+            className="row"
+            style={{ backgroundColor: "white", height: "100%" }}
+         >
             <div className="col-10">
                <div
                   className="border border-2 rounded-4"
@@ -195,9 +92,7 @@ const CreateBlog = () => {
                            className="btn btn-outline-primary"
                            onClick={() => setIsImageBoxOpen(true)}
                         >
-                           {coverImage.isPreview
-                              ? "Change Cover Image"
-                              : "Add Cover"}
+                           {icon.isPreview ? "Change Icon" : "Add Icon"}
                         </button>
                         <div
                            className="  rounded p-2"
@@ -218,11 +113,11 @@ const CreateBlog = () => {
                               </span>
                               <input
                                  type="url"
-                                 aria-label="Image url"
+                                 aria-label="Icon url"
                                  class="form-control"
-                                 value={coverImage.url}
+                                 value={icon.url}
                                  onChange={(e) =>
-                                    setCoverImage((old) => {
+                                    setIcon((old) => {
                                        return { ...old, url: e.target.value };
                                     })
                                  }
@@ -239,9 +134,9 @@ const CreateBlog = () => {
                                  type="text"
                                  aria-label="alt text"
                                  class="form-control"
-                                 value={coverImage.alt}
+                                 value={icon.alt}
                                  onChange={(e) =>
-                                    setCoverImage((old) => {
+                                    setIcon((old) => {
                                        return { ...old, alt: e.target.value };
                                     })
                                  }
@@ -263,16 +158,17 @@ const CreateBlog = () => {
                            </div>
                         </div>
                      </div>
-                     {coverImage.isPreview && (
-                        <img src={coverImage.url} alt={coverImage.alt} />
-                     )}
+                     {icon.isPreview && <img src={icon.url} style={{maxWidth:'200px'}} alt={icon.alt} />}
                      <textarea
                         placeholder="New post title here..."
                         rows={1}
-                        value={blogData.blogTitle}
+                        value={servcieCategory.title}
                         onChange={(e) =>
-                           setBlogData((data) => {
-                              return { ...data, blogTitle: e.target.value };
+                           setServiceCategory((data) => {
+                              return {
+                                 ...data,
+                                 title: e.target.value,
+                              };
                            })
                         }
                         style={{
@@ -294,16 +190,16 @@ const CreateBlog = () => {
                         }}
                         placeholder="Add multiple tags and tags start with # sign"
                         onChange={(e) =>
-                           setBlogData((data) => {
+                           setServiceCategory((data) => {
                               return { ...data, tags: e.target.value };
                            })
                         }
                      ></textarea>
                      <textarea
                         rows={3}
-                        value={blogData.description}
+                        value={servcieCategory.description}
                         onChange={(e) =>
-                           setBlogData((data) => {
+                           setServiceCategory((data) => {
                               return {
                                  ...data,
                                  description: e.target.value,
@@ -321,20 +217,10 @@ const CreateBlog = () => {
                         placeholder="Description..."
                      ></textarea>
                      <div className="text-start my-2">
-                        {blogData.sections.map((el, idx) => (
-                           <>
-                              <button
-                                 className="btn btn-warning"
-                                 onClick={() => updateSection(el, idx)}
-                              >
-                                 Edit
-                              </button>
-                              {Parser(el.content)}
-                              {el.img && (
-                                 <img src={URL.createObjectURL(el.img)} />
-                              )}
-                           </>
-                        ))}
+                        {HTMLReactParser(servcieCategory.content)}
+                        {servcieCategory.content && (
+                           <button className="btn btn-warning">Edit</button>
+                        )}
                      </div>
                      <Editor
                         key={editorKey}
@@ -345,26 +231,12 @@ const CreateBlog = () => {
                            height: 400,
                            width: "100%",
                            zIndex: 2000,
-                           plugins:
-                              "codesample code lists image preview link editimage",
+                           plugins: "lists link",
                            automatic_uploads: true,
                            menubar: false,
-                           images_file_types: "jpg,svg,webp",
-                           file_picker_types: "image",
-                           codesample_languages: [
-                              { text: "JavaScript", value: "javascript" },
-                              { text: "HTML/XML", value: "markup" },
-                              { text: "CSS", value: "css" },
-                              { text: "PHP", value: "php" },
-                              { text: "Ruby", value: "ruby" },
-                              { text: "Python", value: "python" },
-                              { text: "Java", value: "java" },
-                              { text: "C", value: "c" },
-                              { text: "C#", value: "csharp" },
-                              { text: "C++", value: "cpp" },
-                           ],
+
                            toolbar:
-                              "undo insertfile redo styles bold italic image alignleft aligncenter alignright superscript subscript numlist bullist codesample code | blockquote link",
+                              "undo insertfile redo styles bold italic alignleft aligncenter alignright superscript subscript numlist bullist blockquote link",
                            content_style:
                               "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
                         }}
@@ -393,9 +265,9 @@ const CreateBlog = () => {
                   <button
                      type="button"
                      className="btn btn-secondary fw-bold"
-                     onClick={() => saveBlog()}
+                     onClick={() => saveServCate()}
                   >
-                     Publish
+                     Upload
                   </button>
                </div>
             </div>
@@ -404,4 +276,4 @@ const CreateBlog = () => {
    );
 };
 
-export default CreateBlog;
+export default ServiceCategory;

@@ -19,6 +19,13 @@ const Sidebar = () => {
                <a class="m-1 border rounded p-1 fs-5 text-start px-3" role="button" style={{ backgroundColor: pathname === '/admin/turtlsinfo' ? '#e9e9e9' :''}}>
                   <Link to={"/admin/turtlsinfo"} role="button" className="d-block">Turtl Tech Info</Link>
                </a>
+               <a class="m-1 border rounded p-1 fs-5 text-start px-3" role="button" style={{ backgroundColor: pathname === '/admin/portfolio' ? '#e9e9e9' :''}}>
+                  <Link to={"/admin/portfolio"} role="button" className="d-block">Portfolio</Link>
+               </a>
+               <a class="m-1 border rounded p-1 fs-5 text-start px-3" role="button" style={{ backgroundColor: pathname === '/admin/servicecategory' ? '#e9e9e9' :''}}>
+                  <Link to={"/admin/servicecategory"} role="button" className="d-block">Service Category</Link>
+               </a>
+               
             </div>
          </div>
       </React.Fragment>

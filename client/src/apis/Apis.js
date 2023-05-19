@@ -23,6 +23,27 @@ export const allBlogs = () => {
   })
 }
 
+export const portfolioPostApi = (data) => {
+   return axios({
+      method: 'POST',
+      url: `http://${ipAddress}:${port}/portfolio`,
+      data: data
+  })
+}
+
+export const allAllPortfoliosApi = () => {
+   return axios({
+      method: 'GET',
+      url: `http://${ipAddress}:${port}/portfolios`,
+  })
+}
+export const portfolioBySlugApi = (slug) => {
+   return axios({
+      method: 'GET',
+      url: `http://${ipAddress}:${port}/services/${slug}`,
+  })
+}
+
 export const getAllImages = () => {
    return axios({
       method: 'GET',
@@ -101,6 +122,12 @@ export const getSeoByPageName = (pageName) => {
       url: `http://${ipAddress}:${port}/turtlseo/${pageName}`,
   })
 }
+export const getTurtlsInfoApi = () => {
+   return axios({
+      method: 'GET',
+      url: `http://${ipAddress}:${port}/turtlinfo`,
+  })
+}
 export const getAllFaqApi = () => {
    return axios({
       method: 'GET',
@@ -129,7 +156,19 @@ export const saveTurtlSeoDataApi = (data) => {
       data:data,
   })
 }
-
+export const saveServiceCategoryApi = (data) => {
+   return axios({
+      method: 'POST',
+      url: `http://${ipAddress}:${port}/servicecategory`,
+      data:data,
+  })
+}
+export const getAllServiceCategoryApi = () => {
+   return axios({
+      method: 'GET',
+      url: `http://${ipAddress}:${port}/servicecategories`,
+  })
+}
 export const saveFaqApi = (data) => {
    return axios({
       method: 'POST',
@@ -146,3 +185,10 @@ export const updateFaqApi = (data, id) => {
   })
 }
 
+export const sendQueryApi = (data) => {
+   return axios({
+      method: 'POST',
+      url: `http://${ipAddress}:${port}/contactus`,
+      data:data,
+  })
+}
