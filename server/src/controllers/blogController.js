@@ -151,10 +151,13 @@ const getBlogByParams = async (req, res) => {
     let slug = req.params.slug;
 
     let blog = await blogModel.findOne({slug: slug});
-
+    
     if (!blog) {
       return res.status(404).send({ status: false, message: "Blog not found" });
     }
+
+    blog.blogViews = blog.blogViews + 1;
+    await blog.save();
 
     res.status(200).send({ status: true, blog: blog });
   } catch (error) {

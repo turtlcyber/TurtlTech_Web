@@ -14,7 +14,7 @@ const addPageImages = async (req, res) => {
       await checkPageName.save();
       return res
         .status(200)
-        .send({ status: false, message: "Page image updated" });
+        .send({ status: true, message: "Page image updated" });
     }
     // console.log('Hello example', data);
     await pageImageModel.create(data);

@@ -9,8 +9,7 @@ const imageSchema = new mongoose.Schema(
     },
 
     imgField: {
-      type: String,
-      enum: ["BLOG", "HOME", "SERVICES", "ABOUT", "CONTACT"],
+      type: String
     },
   },
   { timestamps: true }

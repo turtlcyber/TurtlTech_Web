@@ -7,7 +7,6 @@ const {
   isvalidEmail,
 } = require("../utils/utils");
 
-// const { imageMV } = require("../middlewares/ImageUpload");
 
 // ADD TURTL INFO
 const addTurtlInfo = async (req, res) => {
@@ -74,15 +73,29 @@ const addTurtlInfo = async (req, res) => {
     // turtlInfoData.socialMediaLinks = obj;
     let objData = {
       serviceEmail,
-        address,
-        contactNumber,
-        socialMediaLinks,
-        googleMap
-    }
+      address,
+      contactNumber,
+      socialMediaLinks,
+      googleMap,
+    };
 
     objData.socialMediaLinks = obj;
+
+    let checkTurtlInfo = await turtlInfoAdded.findOne({ serviceEmail: serviceEmail, address: address });
+
+    if (checkTurtlInfo) {
+      checkTurtlInfo.serviceEmail = serviceEmail;
+      checkTurtlInfo.serviceEmail = serviceEmail;
+      checkTurtlInfo.contactNumber = contactNumber;
+      checkTurtlInfo.socialMediaLinks = obj;
+      checkTurtlInfo.googleMap = googleMap;
+      await checkTurtlInfo.save();
+      return res
+        .status(200)
+        .send({ status: true, message: "Turtl Info updated" });
+    }
+
     let turtlInfoAdded = await turtlInfoModel.create(objData);
-    // console.log('Hello example', obj);
 
     return res.status(201).send({
       status: true,
@@ -94,6 +107,20 @@ const addTurtlInfo = async (req, res) => {
   }
 };
 
-//
+// GET ALL TURTL INFO
+const getTurtlInfo = async (req, res) => {
+  try {
+    let turtlInfo = await turtlInfoModel.find();
+    if (turtlInfo.length === 0) {
+      return res
+        .status(404)
+        .send({ status: false, message: "No turtl info found" });
+    }
 
-module.exports = { addTurtlInfo };
+    return res.status(200).send({ status: true, data: turtlInfo[0] });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+module.exports = { addTurtlInfo, getTurtlInfo };

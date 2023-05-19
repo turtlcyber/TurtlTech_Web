@@ -15,6 +15,7 @@ const blogSchema = new mongoose.Schema(
 
     blogViews: {
       type: Number,
+      default: 0
     },
 
     blogTitle: {
@@ -104,20 +105,3 @@ blogSchema.pre("validate", function (next) {
 
 module.exports = mongoose.model("Blog", blogSchema);
 
-/*
-{
-  title: {
-        type: String
-      },
-
-      content: [{
-        text: {
-          type: String
-        },
-
-        image: {
-          type: String
-        }
-      }]
-    }
-*/

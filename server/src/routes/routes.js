@@ -20,6 +20,7 @@ const pageImageController = require('../controllers/pageImageController');
 const turtlSEOController = require('../controllers/turtlSEOController');
 const contactUsController = require('../controllers/contactUsController');
 const turtlFAQController = require('../controllers/turtlFAQController');
+const serviceCategoryController = require('../controllers/serviceCategoryController');
 const { upload } = require('../middlewares/ImageUpload');
 
 const { Authentication, Authorization } = require('../middlewares/auth');
@@ -72,6 +73,8 @@ router.get("/testimonials", testimonialController.getAllTestimonials);
 
 // PORTFOLIO API
 router.post("/portfolio", portfolioController.addPortfolio);
+router.get("/portfolios", portfolioController.getAllPortfoios);
+router.get("/services/:slug", portfolioController.getPortfolioByParams);
 
 // CERTIFICATE API
 router.post("/certificate", certificateController.addCertificate);
@@ -79,6 +82,7 @@ router.get("/certificates", certificateController.getAllCertificates);
 
 // TURTL INFO API
 router.post("/info", turtlInfoController.addTurtlInfo);
+router.get("/turtlinfo", turtlInfoController.getTurtlInfo);
 
 // EVENT API
 router.post("/event", eventController.addEvent);
@@ -103,5 +107,9 @@ router.post("/turtlfaq", turtlFAQController.addFAQ);
 router.get("/turtlfaqs", turtlFAQController.getAllFAQs);
 router.put("/turtlfaq/:faqId", turtlFAQController.updateFAQById);
 
+// SERVICE CATEGORY APIs
+router.post("/servicecategory", serviceCategoryController.addServiceCategory);
+router.get("/servicecategories", serviceCategoryController.getAllServiceCategories);
+router.get("/servicecategory/:slug", serviceCategoryController.getServiceCategorBySlug);
 
 module.exports = router;
