@@ -21,6 +21,8 @@ const turtlSEOController = require('../controllers/turtlSEOController');
 const contactUsController = require('../controllers/contactUsController');
 const turtlFAQController = require('../controllers/turtlFAQController');
 const serviceCategoryController = require('../controllers/serviceCategoryController');
+const urlCountController = require('../controllers/urlCountingAPI');
+
 const { upload } = require('../middlewares/ImageUpload');
 
 const { Authentication, Authorization } = require('../middlewares/auth');
@@ -112,5 +114,8 @@ router.put("/turtlfaq/:faqId", turtlFAQController.updateFAQById);
 router.post("/servicecategory", serviceCategoryController.addServiceCategory);
 router.get("/servicecategories", serviceCategoryController.getAllServiceCategories);
 router.get("/servicecategory/:slug", serviceCategoryController.getServiceCategorBySlug);
+
+// URL COUNT API
+router.get("/urlcount", urlCountController.getURLCount);
 
 module.exports = router;
