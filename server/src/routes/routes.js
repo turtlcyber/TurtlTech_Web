@@ -22,6 +22,7 @@ const contactUsController = require('../controllers/contactUsController');
 const turtlFAQController = require('../controllers/turtlFAQController');
 const serviceCategoryController = require('../controllers/serviceCategoryController');
 const urlCountController = require('../controllers/urlCountingAPI');
+const paymentGatewayController = require('../controllers/paymentGatewayController');
 
 const { upload } = require('../middlewares/ImageUpload');
 
@@ -117,5 +118,9 @@ router.get("/servicecategory/:slug", serviceCategoryController.getServiceCategor
 
 // URL COUNT API
 router.get("/urlcount", urlCountController.getURLCount);
+
+// PAYMENT APIs
+router.post("/addpayment", paymentGatewayController.addPayment);
+router.get("/getpayment", paymentGatewayController.getPayment);
 
 module.exports = router;
