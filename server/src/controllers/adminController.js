@@ -69,7 +69,8 @@ const createAdmin = async function (req, res) {
     if (!isValidPassword(password))
       return res.status(400).send({
         status: false,
-        message: `Password ${password}  must include atleast one special character[@$!%?&], one uppercase, one lowercase, one number and should be mimimum 8 to 15 characters long for Example:Password@123`,
+        message: `Password must include atleast one special character[@$!%?&], one uppercase, one 
+        lowercase, one number and should be mimimum 8 to 15 characters long for Example:Password@123`,
       });
 
     const hashedPassword = await bcrypt.hash(password, 10);
