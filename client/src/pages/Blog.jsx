@@ -10,7 +10,8 @@ import LocalDateFormat from "../utils/LocalDateFormat";
 import { Link, useNavigate } from "react-router-dom";
 const Blog = () => {
   const history = useNavigate();
-  let ipAddress = '192.168.1.136';
+  // let ipAddress = '192.168.1.136';
+  let ipAddress = "localhost";
   let port = 4001;
 
   const [blogs, setBlogs] = useState([]);

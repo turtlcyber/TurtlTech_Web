@@ -12,83 +12,19 @@ import visionImage from "../assets/img/3.png";
 import { Helmet } from "react-helmet";
 import Testimonials from "../components/Testimonials";
 import Carousel from "carousel-react-rcdev";
-import { getPageImagesByPageName, getSeoByPageName } from "../apis/Apis";
-import { Link } from "react-router-dom";
-
-const slideWidth = 30;
-
-const _items = [
-   {
-      player: {
-         title: "Efren Reyes",
-         desc: 'Known as "The Magician", Efren Reyes is well regarded by many professionals as the greatest all around player of all time.',
-         image: "https://i.postimg.cc/RhYnBf5m/er-slider.jpg",
-      },
-   },
-   {
-      player: {
-         title: "Ronnie O'Sullivan",
-         desc: "Ronald Antonio O'Sullivan is a six-time world champion and is the most successful player in the history of snooker.",
-         image: "https://i.postimg.cc/qBGQNc37/ro-slider.jpg",
-      },
-   },
-   {
-      player: {
-         title: "Shane Van Boening",
-         desc: 'The "South Dakota Kid" is hearing-impaired and uses a hearing aid, but it has not limited his ability.',
-         image: "https://i.postimg.cc/cHdMJQKG/svb-slider.jpg",
-      },
-   },
-   {
-      player: {
-         title: "Mike Sigel",
-         desc: 'Mike Sigel or "Captain Hook" as many like to call him is an American professional pool player with over 108 tournament wins.',
-         image: "https://i.postimg.cc/C12h7nZn/ms-1.jpg",
-      },
-   },
-   {
-      player: {
-         title: "Willie Mosconi",
-         desc: 'Nicknamed "Mr. Pocket Billiards," Willie Mosconi was among the first Billiard Congress of America Hall of Fame inductees.',
-         image: "https://i.postimg.cc/NfzMDVHP/willie-mosconi-slider.jpg",
-      },
-   },
-];
-const data1 = [
-   {
-      picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(2).webp",
-      name: "Lucy Maclen",
-      designation: "Senior Software Engineer",
-      story: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod eos id officiis hic tenetur quae quaerat ad velit ab hic tenetur.",
-      rating: 3.5,
-   },
-   {
-      picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(1).webp",
-      name: "Maria Smantha",
-      designation: "Web Developer",
-      story: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod eos id officiis hic tenetur quae quaerat ad velit ab hic tenetur.",
-      rating: 2.5,
-   },
-   {
-      picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(9).webp",
-      name: "John Martin",
-      designation: "Android Developer",
-      story: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod eos id officiis hic tenetur quae quaerat ad velit ab hic tenetur.",
-      rating: 4,
-   },
-   {
-      picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(1).webp",
-      name: "Vinarak Kishor",
-      designation: "Security Analyst",
-      story: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod eos id officiis hic tenetur quae quaerat ad velit ab hic tenetur.",
-      rating: 5,
-   },
-];
+import NoImage from "../assets/images/NoImage.jpg";
+import { IoCaretForwardOutline, IoCaretBackOutline } from "react-icons/io5";
+import { RiStarFill, RiStarHalfFill } from "react-icons/ri";
+import { allBlogs, getAllTestimonialApi, getPageImagesByPageName, getSeoByPageName } from "../apis/Apis";
+import { Link, useNavigate } from "react-router-dom";
+import LocalDateFormat from "../utils/LocalDateFormat";
 
 const AboutUs = () => {
-   const [testimonialData, setTestimonial] = useState([]);
+   const [testimonials, setTestimonials] = useState([]);
    const [coverImage, setCoverImage] = useState({ url: "", alt: "" });
    const [seoDataFromServer, setSeoDataFromServer] = useState({});
+   const [blogs, setBlogs] = useState([]);
+   const history = useNavigate();
    const getCoverImageByPageName = () => {
       getPageImagesByPageName("ABOUTUS").then((res) => {
          setCoverImage({
@@ -96,6 +32,31 @@ const AboutUs = () => {
             alt: res.data.data.altText,
          });
       });
+   };
+
+   const getAllTestimonial = () => {
+      getAllTestimonialApi()
+         .then((res) => {
+            setTestimonials(res.data.data);
+            console.log(res.data.data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
+   const fetchBlogs = async () => {
+      await allBlogs()
+         .then((res) => {
+            setBlogs(res.data.blogs);
+            console.log(res.data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
+   const openBLog = (slug) => {
+      history(`/blog/${slug}`);
+      console.log(slug);
    };
    const getSEOdata = () => {
       getSeoByPageName("ABOUTUS")
@@ -110,6 +71,8 @@ const AboutUs = () => {
    useEffect(() => {
       getCoverImageByPageName();
       getSEOdata();
+      getAllTestimonial();
+      fetchBlogs();
    }, []);
    return (
       <div>
@@ -377,30 +340,82 @@ const AboutUs = () => {
                </div>
             </div>
          </section>
-         <section>
-            <div class="row d-flex justify-content-center">
-               <div class="col-md-10 col-xl-8 text-center">
-                  <h3 class="mb-4">Testimonials</h3>
-                  <p class="mb-4 pb-2 mb-md-5 pb-md-0">
-                     Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                     Fugit, error amet numquam iure provident voluptate esse
-                     quasi, veritatis totam voluptas nostrum quisquam eum porro
-                     a pariatur veniam.
-                  </p>
+         <section class=" mega-section border-top">
+            <div className="container">
+               <h2 className="title wow fadeInUp mb-5" data-wow-delay=".4s">
+                  <span className="hollow-text">Testimonials</span>
+               </h2>
+               <div
+                  id="testimonialIndicators"
+                  class="carousel slide"
+                  style={{ paddingLeft: "100px", paddingRight: "100px" }}
+               >
+                  <div class="carousel-indicators" id="testimonialBtn">
+                     {testimonials &&
+                        testimonials.map((el, i) => (
+                           <button
+                              type="button"
+                              id="testBtn"
+                              data-bs-target="#testimonialIndicators"
+                              data-bs-slide-to={i}
+                              class="active"
+                              aria-current="true"
+                              aria-label={`Slide ${i + 1}`}
+                           ></button>
+                        ))}
+                  </div>
+                  <div class="carousel-inner">
+                     {testimonials &&
+                        testimonials.map((el, i) => (
+                           <div class={`carousel-item ${i == 0 && "active"}`}>
+                              <div>
+                                 <div>
+                                    <img
+                                       className="rounded-circle object-fit-cover"
+                                       width={"200px"}
+                                       height={"200px"}
+                                       src={el.image}
+                                       alt=""
+                                    />
+                                 </div>
+                                 <h5 className="mt-5">{el.name}</h5>
+                                 <span className="text-uppercase fs-5 fw-bold text-primary">
+                                    {el.designation}
+                                 </span>
+                                 <p className="mt-2">
+                                    <i class="fas fa-quote-left pe-2"></i>
+                                    {el.story}
+                                 </p>
+                                 <h5 className="mt-1 mb-5">
+                                    {[...Array(Math.floor(el.rating))].map(el => (
+                                          <RiStarFill color="#cad411" />
+                                    )
+                                    )}
+                                    {
+                                       el.rating.toString().split('.')[1] && <RiStarHalfFill color="#cad411" />
+                                    }
+                                 </h5>
+                              </div>
+                           </div>
+                        ))}
+                  </div>
+                  <button
+                     class="carousel-control-prev"
+                     type="button"
+                     data-bs-target="#testimonialIndicators"
+                     data-bs-slide="prev"
+                  >
+                     <IoCaretBackOutline color="blue" size={30} />
+                  </button>
+                  <button
+                     class="carousel-control-next text-black "
+                     type="button"
+                     data-bs-target="#testimonialIndicators"
+                     data-bs-slide="next"
+                  >
+                     <IoCaretForwardOutline color="blue" size={30} />
+                  </button>
                </div>
-            </div>
-           
-            <div class="row text-center">
-               {data1.map((el, i) => (
-                  <Testimonials
-                  key={i}
-                     picture={el.picture}
-                     name={el.name}
-                     designation={el.designation}
-                     story={el.story}
-                     rating={el.rating}
-                  />
-               ))}
             </div>
          </section>
 
@@ -429,161 +444,79 @@ const AboutUs = () => {
                   <div class="col-12">
                      <div class="posts-grid">
                         <div class="row">
-                           <div class="col-12 col-lg-4">
-                              <div class="post-box">
-                                 <a
-                                    class="post-link"
-                                    title="How litespeed technology works to speed up your site "
+                        {blogs.slice(0, 3).map((el, i) => (
+                              <div className="col-12 col-lg-4">
+                                 <div
+                                    className="post-box"
+                                    style={{
+                                       overflow: "hidden",
+                                       borderRadius: "20px",
+                                       height: "570px",
+                                       maxHeight: "570px",
+                                       minHeight: "570px",
+                                    }}
                                  >
-                                    <div class="post-img-wrapper">
-                                       <img
-                                          class="parallax-img post-img"
-                                          loading="lazy"
-                                          src={blog2_home}
-                                          alt=""
-                                       />
-                                       <span class="post-date">
-                                          <span class="day">05 </span>oct 2022
-                                       </span>
-                                    </div>
-                                 </a>
-                                 <div class="post-summary">
-                                    <div class="post-info">
-                                       <a class="info post-cat" href="#">
-                                          <i class="bi bi-bookmark icon"></i>
-                                          TURTL CYBER SECURIY
-                                       </a>
-                                       <a class="info post-author" href="#">
-                                          <i class="bi bi-person icon"></i> Jiya
-                                          Srivastava
-                                       </a>
-                                    </div>
-                                    <div class="post-text">
-                                       <a class="post-link">
-                                          <h2 class="post-title">
-                                             Cyber Security Awareness
-                                          </h2>
-                                       </a>
-                                       <p class="post-excerpt">
-                                          With an elevation in utilization of
-                                          cyber services, there has been noticed
-                                          a significant increase in cyber
-                                          threats as well.
-                                       </p>
-                                       <a
-                                          class="read-more"
-                                          title="How litespeed technology works to speed up your site "
+                                    <a
+                                       className="post-link"
+                                       onClick={() => openBLog(el.slug)}
+                                       title={el.blogTitle}
+                                       style={{
+                                          width: "100%",
+                                          position: "relative",
+                                       }}
+                                    >
+                                       <div
+                                          className="post-img-wrapper"
+                                          style={{ height: "300px" }}
                                        >
-                                          read more
-                                          <i class="bi bi-arrow-right icon"></i>
-                                       </a>
+                                          <img
+                                             className="parallax-img  object-fit-cover"
+                                             loading="lazy"
+                                             src={el.coverImg.imageUrl}
+                                             alt={el.coverImg.altText}
+                                             onError={({ currentTarget }) => {
+                                                currentTarget.onerror = null; // prevents looping
+                                                currentTarget.src = NoImage;
+                                             }}
+                                             height={"100%"}
+                                             width={"100%"}
+                                          />
+                                          <span className="post-date">
+                                             {LocalDateFormat(el.publishedAt)}
+                                          </span>
+                                       </div>
+                                    </a>
+                                    <div className="post-summary">
+                                       
+                                       <div className="post-text">
+                                          <a
+                                             className="post-link"
+                                             onClick={() => openBLog(el.slug)}
+                                          >
+                                             <h2 className="post-title">
+                                                {el.blogTitle.slice(0, 50)}
+                                                {el.blogTitle.length > 50 &&
+                                                   "..."}
+                                             </h2>
+                                          </a>
+                                          <p className="post-excerpt">
+                                             {el.description.slice(0, 200)}
+                                             {el.description.length > 200 &&
+                                                "..."}
+                                          </p>
+                                          <a
+                                             className="read-more"
+                                             onClick={() => openBLog(el.slug)}
+                                             title="give your website a new look and feel with themes"
+                                          >
+                                             read more
+                                             <i className="bi bi-arrow-right icon"></i>
+                                          </a>
+                                       </div>
                                     </div>
                                  </div>
                               </div>
-                           </div>
-                           <div class="col-12 col-lg-4">
-                              <div class="post-box">
-                                 <a
-                                    class="post-link"
-                                    title="give your website a new look and feel with themes"
-                                 >
-                                    <div class="post-img-wrapper">
-                                       <img
-                                          class="parallax-img post-img"
-                                          loading="lazy"
-                                          src={blog2}
-                                          alt=""
-                                       />
-                                       <span class="post-date">
-                                          <span class="day">15 </span>sep 2022
-                                       </span>
-                                    </div>
-                                 </a>
-                                 <div class="post-summary">
-                                    <div class="post-info">
-                                       <a class="info post-cat" href="#">
-                                          <i class="bi bi-bookmark icon"></i>web
-                                          dev
-                                       </a>
-                                       <a class="info post-author" href="#">
-                                          <i class="bi bi-person icon"></i>mhmd
-                                          amin
-                                       </a>
-                                    </div>
-                                    <div class="post-text">
-                                       <a class="post-link">
-                                          <h2 class="post-title">
-                                             give your website a new look and
-                                             feel with themes
-                                          </h2>
-                                       </a>
-                                       <p class="post-excerpt">
-                                          Lorem ipsum dolor sit, amet
-                                          consectetur adipisicing elit.Iure
-                                          nulla dolorem, voluptates molestiae
-                                       </p>
-                                       <a
-                                          class="read-more"
-                                          title="give your website a new look and feel with themes"
-                                       >
-                                          read more
-                                          <i class="bi bi-arrow-right icon"></i>
-                                       </a>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="col-12 col-lg-4">
-                              <div class="post-box">
-                                 <a
-                                    class="post-link"
-                                    title="the role of domain names in SEO world explained "
-                                 >
-                                    <div class="post-img-wrapper">
-                                       <img
-                                          class="parallax-img post-img"
-                                          loading="lazy"
-                                          src={blog3}
-                                          alt=""
-                                       />
-                                       <span class="post-date">
-                                          <span class="day">27 </span>aug 2022
-                                       </span>
-                                    </div>
-                                 </a>
-                                 <div class="post-summary">
-                                    <div class="post-info">
-                                       <a class="info post-cat" href="#">
-                                          <i class="bi bi-bookmark icon"></i>SEO
-                                       </a>
-                                       <a class="info post-author" href="#">
-                                          <i class="bi bi-person icon"></i>yusuf
-                                          amin
-                                       </a>
-                                    </div>
-                                    <div class="post-text">
-                                       <a class="post-link">
-                                          <h2 class="post-title">
-                                             the role of domain names in SEO
-                                             world explained
-                                          </h2>
-                                       </a>
-                                       <p class="post-excerpt">
-                                          Lorem ipsum dolor sit, amet
-                                          consectetur adipisicing elit.Iure
-                                          nulla dolorem, voluptates molestiae
-                                       </p>
-                                       <a
-                                          class="read-more"
-                                          title="the role of domain names in SEO world explained "
-                                       >
-                                          read more
-                                          <i class="bi bi-arrow-right icon"></i>
-                                       </a>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
+                           ))}
                         </div>
                      </div>
                   </div>

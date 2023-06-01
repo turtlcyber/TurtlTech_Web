@@ -92,3 +92,16 @@ export const companyInfoLost= () => {
       type: ActionType.COMPANY_INFO_LOST,
    }
 }
+
+export const loginAdminFn= (token) => {
+   return {
+      type: ActionType.ADMIN_LOGIN_TOKEN,
+      payload: token
+   }
+}
+
+export const loginAdminLostFn= () => {
+   return {
+      type: ActionType.ADMIN_LOGIN_LOST
+   }
+}

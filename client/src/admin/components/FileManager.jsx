@@ -7,7 +7,8 @@ import { CgCloseR } from "react-icons/cg";
 import {useDispatch, useSelector} from 'react-redux';
 import { SpinnerClose, SpinnerOpen, filemanagerClose } from "../../redux/R_Action";
 const FileManager = () => {
-   let ipAddress = "192.168.1.218";
+   let ipAddress = "192.168.29.133";
+   // let ipAddress = "localhost";
    let port = 4001;
    const [images, setImages] = useState([]);
    const [filteredImages, setFilteredImages] = useState([]);

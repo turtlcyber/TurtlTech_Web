@@ -44,9 +44,9 @@ function App() {
     <div className="App">
       {/* <BlogComp/> */}
       {state.SpinnerOpenClose && <Spinner/>} 
-      <LoginForm/>
+      {/* <LoginForm/> */}
       {/* <div id="signInDiv"></div> */}
-      <AdminRoute/>
+      {/* <AdminRoute/> */}
       <Header/>
       <Helmet>
         <title>Turtl Cyber</title>

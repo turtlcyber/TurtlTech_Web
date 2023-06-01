@@ -9,6 +9,8 @@ import {
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { SpinnerClose, SpinnerOpen } from "../redux/R_Action";
+
+
 const Contact = () => {
    const dispatch = useDispatch();
    const state = useSelector((state) => state);
@@ -356,107 +358,7 @@ const Contact = () => {
                      </div>
                   </div>
                </section>
-               <div id="carouselExampleIndicators" class="carousel slide">
-                  <div class="carousel-indicators">
-                     <button
-                        type="button"
-                        data-bs-target="#carouselExampleIndicators"
-                        data-bs-slide-to="0"
-                        class="active"
-                        aria-current="true"
-                        aria-label="Slide 1"
-                     ></button>
-                     <button
-                        type="button"
-                        data-bs-target="#carouselExampleIndicators"
-                        data-bs-slide-to="1"
-                        aria-label="Slide 2"
-                     ></button>
-                     <button
-                        type="button"
-                        data-bs-target="#carouselExampleIndicators"
-                        data-bs-slide-to="2"
-                        aria-label="Slide 3"
-                     ></button>
-                  </div>
-                  <div class="carousel-inner">
-                     <div class="carousel-item active">
-                        <div>
-                           <div class="img">
-                              <img
-                                 src="https://media.giphy.com/media/S3J9D4Rdaw3E7r2qTi/giphy.gif"
-                                 alt=""
-                              />
-                           </div>
-                           <h2>Ms. Lorem R. Ipsum</h2>
-                           <p>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco.
-                           </p>
-                        </div>
-                     </div>
-                     <div class="carousel-item">
-                        <div>
-                           <div class="img">
-                              <img
-                                 src="https://media.giphy.com/media/S3J9D4Rdaw3E7r2qTi/giphy.gif"
-                                 alt=""
-                              />
-                           </div>
-                           <h2>Ms. Lorem R. Ipsum</h2>
-                           <p>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco.
-                           </p>
-                        </div>
-                     </div>
-                     <div class="carousel-item">
-                        <div>
-                           <div class="img">
-                              <img
-                                 src="https://media.giphy.com/media/S3J9D4Rdaw3E7r2qTi/giphy.gif"
-                                 alt=""
-                              />
-                           </div>
-                           <h2>Ms. Lorem R. Ipsum</h2>
-                           <p>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco.
-                           </p>
-                        </div>
-                     </div>
-                  </div>
-                  <button
-                     class="carousel-control-prev"
-                     type="button"
-                     data-bs-target="#carouselExampleIndicators"
-                     data-bs-slide="prev"
-                  >
-                     <span
-                        class="carousel-control-prev-icon bg-black"
-                        aria-hidden="true"
-                     ></span>
-                     <span class="visually-hidden">Previous</span>
-                  </button>
-                  <button
-                     class="carousel-control-next"
-                     type="button"
-                     data-bs-target="#carouselExampleIndicators"
-                     data-bs-slide="next"
-                  >
-                     <span
-                        class="carousel-control-next-icon bg-black"
-                        aria-hidden="true"
-                     ></span>
-                     <span class="visually-hidden">Next</span>
-                  </button>
-               </div>
+               
                <div>
                   <section class="map-section  elf-section">
                      <div class="sec-heading  centered   ">

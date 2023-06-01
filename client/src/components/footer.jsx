@@ -18,15 +18,15 @@ const Footer = () => {
          <div class="container">
             {state.companyInfoFetchLost &&
                state.companyInfoFetchLost.subsidiaryAddress && (
-                  <div className="row mb-5  text-white text-start">
+                  <div className="row col-12 mb-5  text-white text-start">
                      <div className="text-center">
                         <h1>Our Offices</h1>
                      </div>
                      {state.companyInfoFetchLost.subsidiaryAddress.map(
                         (el, i) => (
                            <div
-                              className="col border border-white rounded-3 mx-1"
-                              style={{ minHeight: "200px" }}
+                              className="col-sm col-md col-lg border border-white rounded-3 m-1"
+                              style={{ minHeight: "200px", minWidth:'300px' }}
                            >
                               <h3>
                                  <i class="bi bi-geo-alt icon"></i>
@@ -39,12 +39,12 @@ const Footer = () => {
                   </div>
                )}
 
-            <div class="row footer-cols">
-               <div class="col-12 col-md-8 col-lg-4 footer-col">
+            <div class="row footer-cols justify-content-between">
+               <div class="col-sm-12 col-lg-4 footer-col">
                   <img
                      class="img-fluid footer-logo"
                      loading="lazy"
-                     src="img/logo1-removebg-preview.png"
+                     src={require(".././assets/img/logo1-removebg-preview.png")}
                      width="100%"
                      alt="logo"
                   />
@@ -56,7 +56,7 @@ const Footer = () => {
                         to drive your success.
                      </p>
                   </div>
-                  <div class="form-area">
+                  {/* <div class="form-area">
                      <div class="mailchimp-form">
                         <form class="one-field-form" method="post" action="#0">
                            <div class="field-group">
@@ -86,9 +86,9 @@ const Footer = () => {
                            </span>
                         </form>
                      </div>
-                  </div>
+                  </div> */}
                </div>
-               <div class="col-6 col-lg-2 footer-col">
+               <div class="col-sm col-lg-4 footer-col text-start">
                   <h2 class="footer-col-title">useful links</h2>
                   <div class="footer-col-content-wrapper">
                      <ul class="footer-menu">
@@ -125,83 +125,91 @@ const Footer = () => {
                      </ul>
                   </div>
                </div>
-               <div class="col-12 col-lg-4 footer-col">
+               <div class="col-sm col-lg-4  footer-col  text-start">
                   <h2 class="footer-col-title">contact information</h2>
                   <div class="footer-col-content-wrapper">
-                     <div class="contact-info-card">
-                        <i class="bi bi-envelope icon"></i>
-                        <a
-                           class="text-lowercase info"
-                           href="mailto:info@turtltech.com"
-                        >
-                           info@turtltech.com
-                        </a>
-                     </div>
-                     <div class="contact-info-card">
-                        <a href="https://goo.gl/maps/bxvUwxyb6wLGqHst7">
-                           {" "}
-                           <i class="bi bi-geo-alt icon"></i>
-                           <span class="text-lowercase info">
-                              B-25, Sector-1, Noida, Uttar Pradesh 201301
-                           </span>
-                        </a>
-                     </div>
-                     <div class="contact-info-card">
-                        <i class="bi bi-phone icon"></i>
-                        <a class="info" href="tel:+919958040595">
-                           +91-9958040595{" "}
-                        </a>
-                     </div>
+                     {state.companyInfoFetchLost &&
+                        state.companyInfoFetchLost.serviceEmail && (
+                           <div class="contact-info-card">
+                              <i class="bi bi-envelope icon"></i>
+                              <a
+                                 class="text-lowercase info"
+                                 href="mailto:info@turtltech.com"
+                              >
+                                 {state.companyInfoFetchLost.serviceEmail}
+                              </a>
+                           </div>
+                        )}
+                     {state.companyInfoFetchLost &&
+                        state.companyInfoFetchLost.address && (
+                           <div class="contact-info-card">
+                              <a href="https://goo.gl/maps/bxvUwxyb6wLGqHst7">
+                                 {" "}
+                                 <i class="bi bi-geo-alt icon"></i>
+                                 <span class="text-lowercase info">
+                                    {state.companyInfoFetchLost.address}
+                                 </span>
+                              </a>
+                           </div>
+                        )}
+
+                     {state.companyInfoFetchLost &&
+                        state.companyInfoFetchLost.contactNumber && (
+                           <div class="contact-info-card">
+                              <i class="bi bi-phone icon"></i>
+                              {state.companyInfoFetchLost.contactNumber.map(
+                                 (el, i) => (
+                                    <a class="info me-2" href={`tel:+91${el}`}>
+                                       +91-{el}
+                                    </a>
+                                 )
+                              )}
+                           </div>
+                        )}
+
                      <div class="contact-info-card">
                         <div class="social-icons">
                            <div class="sc-wrapper dir-row sc-size-32">
-                              <ul class="sc-list">
-                                 <li class="sc-item" title="Facebook">
-                                    <a
-                                       class="sc-link"
-                                       href="#0"
-                                       title="social media icon"
-                                    >
-                                       <i class="fab fa-facebook-f sc-icon"></i>
-                                    </a>
-                                 </li>
-                                 <li class="sc-item" title="youtube">
-                                    <a
-                                       class="sc-link"
-                                       href="#0"
-                                       title="social media icon"
-                                    >
-                                       <i class="fab fa-youtube sc-icon"></i>
-                                    </a>
-                                 </li>
-                                 <li class="sc-item" title="instagram">
-                                    <a
-                                       class="sc-link"
-                                       href="#0"
-                                       title="social media icon"
-                                    >
-                                       <i class="fab fa-instagram sc-icon"></i>
-                                    </a>
-                                 </li>
-                                 <li class="sc-item" title="twitter">
-                                    <a
-                                       class="sc-link"
-                                       href="https://twitter.com/TurtlTech"
-                                       title="social media icon"
-                                    >
-                                       <i class="fab fa-twitter sc-icon"></i>
-                                    </a>
-                                 </li>
-                                 <li class="sc-item" title="linkedin">
-                                    <a
-                                       class="sc-link"
-                                       href="https://www.linkedin.com/company/turtltech/"
-                                       title="social media icon"
-                                    >
-                                       <i class="fab fa-linkedin-in"></i>
-                                    </a>
-                                 </li>
-                              </ul>
+                              {state.companyInfoFetchLost &&
+                                 state.companyInfoFetchLost
+                                    .socialMediaLinks && (
+                                    <ul class="sc-list">
+                                       {state.companyInfoFetchLost.socialMediaLinks.map(
+                                          (el, i) => (
+                                             <li
+                                                class="sc-item"
+                                                title={el.types}
+                                                key={el._id}
+                                             >
+                                                <a
+                                                   class="sc-link"
+                                                   href={el.url}
+                                                   target="__black"
+                                                   title="social media icon"
+                                                >
+                                                   {el.types === "facebook" ? (
+                                                      <i class="fab fa-facebook-f sc-icon"></i>
+                                                   ) : el.types ===
+                                                     "twitter" ? (
+                                                      <i class="fab fa-twitter sc-icon"></i>
+                                                   ) : el.types ===
+                                                     "youtube" ? (
+                                                      <i class="fab fa-youtube sc-icon"></i>
+                                                   ) : el.types ===
+                                                     "instagram" ? (
+                                                      <i class="fab fa-instagram sc-icon"></i>
+                                                   ) : el.types ===
+                                                     "linkedin" ? (
+                                                      <i class="fab fa-linkedin-in"></i>
+                                                   ) : (
+                                                      ""
+                                                   )}
+                                                </a>
+                                             </li>
+                                          )
+                                       )}
+                                    </ul>
+                                 )}
                            </div>
                         </div>
                      </div>
