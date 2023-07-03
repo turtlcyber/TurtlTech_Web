@@ -180,7 +180,7 @@ const FAQ = () => {
          </div>
 
          <div className="row text-start">
-            <div className="col-3 my-5 ps-5">
+            <div className="col-sm-12  col-lg-3 my-5 ps-5">
                <ul class="list-group">
                   <li
                      class="list-group-item liHover"
@@ -203,7 +203,7 @@ const FAQ = () => {
                      ))}
                </ul>
             </div>
-            <div className="col-8 my-5 text-start">
+            <div className="col-lg-8 col-sm-12  my-5 text-start">
                <div class="accordion" id="accordionFaqPage">
                   {filterFaq.map((el, i) => (
                      <div class="accordion-item" key={el._id}>

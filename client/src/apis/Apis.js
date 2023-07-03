@@ -1,5 +1,6 @@
 import axios from "axios"
-let ipAddress = '192.168.1.218';
+let ipAddress = '192.168.29.133';
+// let ipAddress = "localhost";
 let port = 4001;
 
 export const blogPost = (data) => {
@@ -211,6 +212,14 @@ export const sendQueryApi = (data) => {
    return axios({
       method: 'POST',
       url: `http://${ipAddress}:${port}/contactus`,
+      data:data,
+  })
+}
+
+export const loginAdmin = (data) => {
+   return axios({
+      method: 'POST',
+      url: `http://${ipAddress}:${port}/login`,
       data:data,
   })
 }

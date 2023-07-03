@@ -99,6 +99,21 @@ export const SpinnerOpenClose = (state=false, action) => {
    }
 }
 
+export const adminLoginToken = (state={token:'', flag:false}, action) => {
+   switch(action.type){
+      case ActionType.ADMIN_LOGIN_TOKEN :
+         state.flag = true;
+         state.token = action.payload;
+         return state;
+      case ActionType.ADMIN_LOGIN_LOST :
+         state.flag = false;
+         state.token = "";
+         return state;
+      default: return state;
+   }
+}
+
+
 
 export const companyInfoFetchLost = (state = {}, action) => {
    

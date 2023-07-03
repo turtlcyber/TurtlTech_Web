@@ -23,11 +23,15 @@ import image2 from "../assets/img/2.jpg";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import AllServices from "../components/AllServices";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PortfolioTabCard from "../components/PortfolioTabCard";
 import Testimonials from "../components/Testimonials";
+import NoImage from "../assets/images/NoImage.jpg";
+import { IoCaretForwardOutline, IoCaretBackOutline } from "react-icons/io5";
+import { RiStarFill, RiStarHalfFill } from "react-icons/ri";
 import {
    allAllPortfoliosApi,
+   allBlogs,
    getAllCertificateApi,
    getAllSeosApi,
    getAllTestimonialApi,
@@ -35,13 +39,16 @@ import {
 } from "../apis/Apis";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
+import LocalDateFormat from "../utils/LocalDateFormat";
 
 const Home = () => {
-   const state = useSelector(state => state);
+   const state = useSelector((state) => state);
+   const history = useNavigate();
    const [certificates, setCertificate] = useState([]);
    const [testimonials, setTestimonials] = useState([]);
    const [seoDataFromServer, setSeoDataFromServer] = useState({});
-   
+   const [blogs, setBlogs] = useState([]);
+
    const [portfolios, setPortfolios] = useState([]);
 
    const getAllCertificate = () => {
@@ -87,6 +94,16 @@ const Home = () => {
             console.log(err);
          });
    };
+   const fetchBlogs = async () => {
+      await allBlogs()
+         .then((res) => {
+            setBlogs(res.data.blogs);
+            console.log(res.data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   };
    const openBLog = (slug) => {
       history(`/blog/${slug}`);
       console.log(slug);
@@ -95,11 +112,13 @@ const Home = () => {
       history(`/services/${slug}`);
       console.log(slug);
    };
+
    useEffect(() => {
       getAllCertificate();
       getAllTestimonial();
       getSEOdata();
       getAllPortfolio();
+      fetchBlogs();
    }, []);
    return (
       <div>
@@ -186,7 +205,6 @@ const Home = () => {
                      <div className="hero-text-area">
                         <div className="row">
                            <div className="col-12">
-                              
                               <div
                                  className="pre-title"
                                  style={{ fontSize: "larger" }}
@@ -622,106 +640,6 @@ const Home = () => {
                </div>
             </div>
          </section>
-         <section id="testim" class="testim">
-            <div class="wrap">
-               <span
-                  id="right-arrow"
-                  class="arrow right fa fa-chevron-right"
-               ></span>
-               <span
-                  id="left-arrow"
-                  class="arrow left fa fa-chevron-left "
-               ></span>
-               <ul id="testim-dots" class="dots">
-                  <li class="dot active"></li>
-                  <li class="dot"></li>
-                  <li class="dot"></li>
-                  <li class="dot"></li>
-                  <li class="dot"></li>
-               </ul>
-               <div id="testim-content" class="cont">
-                  <div class="active">
-                     <div class="img">
-                        <img
-                           src="https://media.giphy.com/media/S3J9D4Rdaw3E7r2qTi/giphy.gif"
-                           alt=""
-                        />
-                     </div>
-                     <h2>Lorem P. Ipsum</h2>
-                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco.
-                     </p>
-                  </div>
-
-                  <div>
-                     <div class="img">
-                        <img
-                           src="https://media.giphy.com/media/S3J9D4Rdaw3E7r2qTi/giphy.gif"
-                           alt=""
-                        />
-                     </div>
-                     <h2>Mr. Lorem Ipsum</h2>
-                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco.
-                     </p>
-                  </div>
-
-                  <div>
-                     <div class="img">
-                        <img
-                           src="https://media.giphy.com/media/S3J9D4Rdaw3E7r2qTi/giphy.gif"
-                           alt=""
-                        />
-                     </div>
-                     <h2>Lorem Ipsum</h2>
-                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco.
-                     </p>
-                  </div>
-
-                  <div>
-                     <div class="img">
-                        <img
-                           src="https://media.giphy.com/media/S3J9D4Rdaw3E7r2qTi/giphy.gif"
-                           alt=""
-                        />
-                     </div>
-                     <h2>Lorem De Ipsum</h2>
-                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco.
-                     </p>
-                  </div>
-
-                  <div>
-                     <div class="img">
-                        <img
-                           src="https://media.giphy.com/media/S3J9D4Rdaw3E7r2qTi/giphy.gif"
-                           alt=""
-                        />
-                     </div>
-                     <h2>Ms. Lorem R. Ipsum</h2>
-                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco.
-                     </p>
-                  </div>
-               </div>
-            </div>
-         </section>
 
          <section
             className="portfolio portfolio-blocks mega-section"
@@ -783,6 +701,84 @@ const Home = () => {
                </Tabs>
             </div>
          </section>
+         <section class=" mega-section border-top">
+            <div className="container">
+               <h2 className="title wow fadeInUp mb-5" data-wow-delay=".4s">
+                  <span className="hollow-text">Testimonials</span>
+               </h2>
+               <div
+                  id="testimonialIndicators"
+                  class="carousel slide"
+                  style={{ paddingLeft: "100px", paddingRight: "100px" }}
+               >
+                  <div class="carousel-indicators" id="testimonialBtn">
+                     {testimonials &&
+                        testimonials.map((el, i) => (
+                           <button
+                              type="button"
+                              id="testBtn"
+                              data-bs-target="#testimonialIndicators"
+                              data-bs-slide-to={i}
+                              class="active"
+                              aria-current="true"
+                              aria-label={`Slide ${i + 1}`}
+                           ></button>
+                        ))}
+                  </div>
+                  <div class="carousel-inner">
+                     {testimonials &&
+                        testimonials.map((el, i) => (
+                           <div class={`carousel-item ${i == 0 && "active"}`}>
+                              <div>
+                                 <div>
+                                    <img
+                                       className="rounded-circle object-fit-cover"
+                                       width={"200px"}
+                                       height={"200px"}
+                                       src={el.image}
+                                       alt=""
+                                    />
+                                 </div>
+                                 <h5 className="mt-5">{el.name}</h5>
+                                 <span className="text-uppercase fs-5 fw-bold text-primary">
+                                    {el.designation}
+                                 </span>
+                                 <p className="mt-2">
+                                    <i class="fas fa-quote-left pe-2"></i>
+                                    {el.story}
+                                 </p>
+                                 <h5 className="mt-1 mb-5">
+                                    {[...Array(Math.floor(el.rating))].map(el => (
+                                          <RiStarFill color="#cad411" />
+                                    )
+                                    )}
+                                    {
+                                       el.rating.toString().split('.')[1] && <RiStarHalfFill color="#cad411" />
+                                    }
+                                 </h5>
+                              </div>
+                           </div>
+                        ))}
+                  </div>
+                  <button
+                     class="carousel-control-prev"
+                     type="button"
+                     data-bs-target="#testimonialIndicators"
+                     data-bs-slide="prev"
+                  >
+                     <IoCaretBackOutline color="blue" size={30} />
+                  </button>
+                  <button
+                     class="carousel-control-next text-black "
+                     type="button"
+                     data-bs-target="#testimonialIndicators"
+                     data-bs-slide="next"
+                  >
+                     <IoCaretForwardOutline color="blue" size={30} />
+                  </button>
+               </div>
+            </div>
+         </section>
 
          <section className="blog blog-home mega-section bg-light" id="blog">
             <div className="container">
@@ -804,7 +800,7 @@ const Home = () => {
                   >
                      <a
                         className="cta-btn btn-solid cta-btn btn-solid"
-                        href="blog-turtltech.html"
+                        onClick={() => history("/blog")}
                      >
                         see all posts<i className="bi bi-arrow-right icon"></i>
                      </a>
@@ -814,180 +810,79 @@ const Home = () => {
                   <div className="col-12">
                      <div className="posts-grid">
                         <div className="row">
-                           <div className="col-12 col-lg-4">
-                              <div className="post-box">
-                                 <a
-                                    className="post-link"
-                                    href="blog-turtltech.html"
-                                    title="How litespeed technology works to speed up your site "
+                           {blogs.slice(0, 3).map((el, i) => (
+                              <div className="col-12 col-lg-4">
+                                 <div
+                                    className="post-box"
+                                    style={{
+                                       overflow: "hidden",
+                                       borderRadius: "20px",
+                                       height: "570px",
+                                       maxHeight: "570px",
+                                       minHeight: "570px",
+                                    }}
                                  >
-                                    <div className="post-img-wrapper">
-                                       <img
-                                          className="parallax-img post-img"
-                                          loading="lazy"
-                                          src={blog2_home}
-                                          alt=""
-                                       />
-                                       <span className="post-date">
-                                          <span className="day">05 </span>oct
-                                          2022
-                                       </span>
-                                    </div>
-                                 </a>
-                                 <div className="post-summary">
-                                    <div className="post-info">
-                                       <a className="info post-cat" href="#">
-                                          <i className="bi bi-bookmark icon"></i>
-                                          TURTL CYBER SECURIY
-                                       </a>
-                                       <a className="info post-author" href="#">
-                                          <i className="bi bi-person icon"></i>{" "}
-                                          Jiya Srivastava
-                                       </a>
-                                    </div>
-                                    <div className="post-text">
-                                       <a
-                                          className="post-link"
-                                          href="blog-turtltech.html"
+                                    <a
+                                       className="post-link"
+                                       onClick={() => openBLog(el.slug)}
+                                       title={el.blogTitle}
+                                       style={{
+                                          width: "100%",
+                                          position: "relative",
+                                       }}
+                                    >
+                                       <div
+                                          className="post-img-wrapper"
+                                          style={{ height: "300px" }}
                                        >
-                                          <h2 className="post-title">
-                                             Cyber Security Awareness
-                                          </h2>
-                                       </a>
-                                       <p className="post-excerpt">
-                                          With an elevation in utilization of
-                                          cyber services, there has been noticed
-                                          a significant increase in cyber
-                                          threats as well.
-                                       </p>
-                                       <a
-                                          className="read-more"
-                                          href="blog-turtltech.html"
-                                          title="How litespeed technology works to speed up your site "
-                                       >
-                                          read more
-                                          <i className="bi bi-arrow-right icon"></i>
-                                       </a>
+                                          <img
+                                             className="parallax-img  object-fit-cover"
+                                             loading="lazy"
+                                             src={el.coverImg.imageUrl}
+                                             alt={el.coverImg.altText}
+                                             onError={({ currentTarget }) => {
+                                                currentTarget.onerror = null; // prevents looping
+                                                currentTarget.src = NoImage;
+                                             }}
+                                             height={"100%"}
+                                             width={"100%"}
+                                          />
+                                          <span className="post-date">
+                                             {LocalDateFormat(el.publishedAt)}
+                                          </span>
+                                       </div>
+                                    </a>
+                                    <div className="post-summary">
+                                       
+                                       <div className="post-text">
+                                          <a
+                                             className="post-link"
+                                             onClick={() => openBLog(el.slug)}
+                                          >
+                                             <h2 className="post-title">
+                                                {el.blogTitle.slice(0, 50)}
+                                                {el.blogTitle.length > 50 &&
+                                                   "..."}
+                                             </h2>
+                                          </a>
+                                          <p className="post-excerpt">
+                                             {el.description.slice(0, 200)}
+                                             {el.description.length > 200 &&
+                                                "..."}
+                                          </p>
+                                          <a
+                                             className="read-more"
+                                             onClick={() => openBLog(el.slug)}
+                                             title="give your website a new look and feel with themes"
+                                          >
+                                             read more
+                                             <i className="bi bi-arrow-right icon"></i>
+                                          </a>
+                                       </div>
                                     </div>
                                  </div>
                               </div>
-                           </div>
-                           <div className="col-12 col-lg-4">
-                              <div className="post-box">
-                                 <a
-                                    className="post-link"
-                                    href="blog-turtltech.html"
-                                    title="give your website a new look and feel with themes"
-                                 >
-                                    <div className="post-img-wrapper">
-                                       <img
-                                          className="parallax-img post-img"
-                                          loading="lazy"
-                                          src={blog2}
-                                          alt=""
-                                       />
-                                       <span className="post-date">
-                                          <span className="day">15 </span>sep
-                                          2022
-                                       </span>
-                                    </div>
-                                 </a>
-                                 <div className="post-summary">
-                                    <div className="post-info">
-                                       <a className="info post-cat" href="#">
-                                          <i className="bi bi-bookmark icon"></i>
-                                          web dev
-                                       </a>
-                                       <a className="info post-author" href="#">
-                                          <i className="bi bi-person icon"></i>
-                                          mhmd amin
-                                       </a>
-                                    </div>
-                                    <div className="post-text">
-                                       <a
-                                          className="post-link"
-                                          href="blog-turtltech.html"
-                                       >
-                                          <h2 className="post-title">
-                                             give your website a new look and
-                                             feel with themes
-                                          </h2>
-                                       </a>
-                                       <p className="post-excerpt">
-                                          Lorem ipsum dolor sit, amet
-                                          consectetur adipisicing elit.Iure
-                                          nulla dolorem, voluptates molestiae
-                                       </p>
-                                       <a
-                                          className="read-more"
-                                          href="blog-turtltech.html"
-                                          title="give your website a new look and feel with themes"
-                                       >
-                                          read more
-                                          <i className="bi bi-arrow-right icon"></i>
-                                       </a>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <div className="col-12 col-lg-4">
-                              <div className="post-box">
-                                 <a
-                                    className="post-link"
-                                    href="blog-turtltech.html"
-                                    title="the role of domain names in SEO world explained "
-                                 >
-                                    <div className="post-img-wrapper">
-                                       <img
-                                          className="parallax-img post-img"
-                                          loading="lazy"
-                                          src={blog3}
-                                          alt=""
-                                       />
-                                       <span className="post-date">
-                                          <span className="day">27 </span>aug
-                                          2022
-                                       </span>
-                                    </div>
-                                 </a>
-                                 <div className="post-summary">
-                                    <div className="post-info">
-                                       <a className="info post-cat" href="#">
-                                          <i className="bi bi-bookmark icon"></i>
-                                          SEO
-                                       </a>
-                                       <a className="info post-author" href="#">
-                                          <i className="bi bi-person icon"></i>
-                                          yusuf amin
-                                       </a>
-                                    </div>
-                                    <div className="post-text">
-                                       <a
-                                          className="post-link"
-                                          href="blog-turtltech.html"
-                                       >
-                                          <h2 className="post-title">
-                                             the role of domain names in SEO
-                                             world explained
-                                          </h2>
-                                       </a>
-                                       <p className="post-excerpt">
-                                          Lorem ipsum dolor sit, amet
-                                          consectetur adipisicing elit.Iure
-                                          nulla dolorem, voluptates molestiae
-                                       </p>
-                                       <a
-                                          className="read-more"
-                                          href="blog-turtltech.html"
-                                          title="the role of domain names in SEO world explained "
-                                       >
-                                          read more
-                                          <i className="bi bi-arrow-right icon"></i>
-                                       </a>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
+                           ))}
                         </div>
                      </div>
                   </div>

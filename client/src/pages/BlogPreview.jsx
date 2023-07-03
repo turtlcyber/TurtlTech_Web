@@ -19,7 +19,8 @@ const BlogPreview = () => {
    const params = useParams();
    const [blog, setBlog] = useState(null);
    const [seoDataFromServer, setSeoDataFromServer] = useState({});
-   let ipAddress = "192.168.1.167";
+   let ipAddress = "localhost";
+   // let ipAddress = "192.168.1.167";
    let port = 4001;
 
    const likeHandler = (likeType) => {
