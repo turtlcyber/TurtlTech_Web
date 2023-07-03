@@ -54,7 +54,7 @@ const addPayment = async (req, res) => {
       } else {
         for (let i = 0; i < payment.links.length; i++) {
           if (payment.links[i].rel === "approval_url") {
-            res.status(200).redirect(payment.links[i].href);
+            return res.status(200).redirect(payment.links[i].href);
           }
         }
       }
@@ -91,7 +91,7 @@ const getPayment = async (req, res) => {
           throw error;
         } else {
         //   console.log(JSON.stringify(payment));
-          res.status(200).send({ status: true, message: "Success" });
+          return res.status(200).send({ status: true, message: "Success" });
         }
       }
     );

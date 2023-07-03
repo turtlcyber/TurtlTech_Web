@@ -62,15 +62,19 @@ const addTurtlInfo = async (req, res) => {
     // }
 
     let obj = [];
-    if (typeof socialMediaLinks === "string") {
-      obj.push(JSON.parse(socialMediaLinks));
-    } else {
-      for (let i = 0; i < socialMediaLinks.length; i++) {
-        obj.push(JSON.parse(socialMediaLinks[i]));
+    
+    if (socialMediaLinks !== undefined) {
+      if (typeof socialMediaLinks === "string") {
+        obj.push(JSON.parse(socialMediaLinks));
+      } else {
+        for (let i = 0; i < socialMediaLinks.length; i++) {
+          obj.push(JSON.parse(socialMediaLinks[i]));
+        }
       }
     }
-
+  
     // turtlInfoData.socialMediaLinks = obj;
+
     let objData = {
       serviceEmail,
       address,
@@ -81,10 +85,11 @@ const addTurtlInfo = async (req, res) => {
 
     objData.socialMediaLinks = obj;
 
-    objData.subsidiaryAddress = JSON.parse(data.subsidiaryAddress);
+    if (data.subsidiaryAddress) {
+      objData.subsidiaryAddress = JSON.parse(data.subsidiaryAddress);
+    }
 
     let checkTurtlInfo = await turtlInfoModel.findOne({ address: address });
-
     if (checkTurtlInfo) {
       checkTurtlInfo.serviceEmail = serviceEmail;
       checkTurtlInfo.address = address;
@@ -99,13 +104,14 @@ const addTurtlInfo = async (req, res) => {
         .status(200)
         .send({ status: true, message: "Turtl Info updated" });
     }
-
+     
     let turtlInfoAdded = await turtlInfoModel.create(objData);
 
+    
     return res.status(201).send({
       status: true,
       message: "Turtl info added successfully",
-      // data: turtlInfoAdded
+      data: turtlInfoAdded
     });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });

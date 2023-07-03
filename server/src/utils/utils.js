@@ -27,7 +27,7 @@ const isvalidEmail = function(gmail) {
 
 let isValidPassword = function(password) {
     let regexPassword =
-    /^[a-zA-Z0-9*@]{8,15}$/;
+    /^[a-zA-Z0-9*@]{12,25}$/;
     return regexPassword.test(password);
 };
 

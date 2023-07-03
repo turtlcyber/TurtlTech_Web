@@ -123,7 +123,7 @@ const getBlogs = async (req, res) => {
       return res.status(404).send({ status: false, message: "No blog found" });
     }
 
-    res.status(200).send({ status: true, blogs: blogs });
+    return res.status(200).send({ status: true, blogs: blogs });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -147,7 +147,7 @@ const getBlogById = async (req, res) => {
       return res.status(404).send({ status: false, message: "Blog not found" });
     }
 
-    res.status(200).send({ status: true, blog: blog });
+    return res.status(200).send({ status: true, blog: blog });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -167,7 +167,7 @@ const getBlogByParams = async (req, res) => {
     blog.blogViews = blog.blogViews + 1;
     await blog.save();
 
-    res.status(200).send({ status: true, blog: blog });
+    return res.status(200).send({ status: true, blog: blog });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -231,7 +231,7 @@ const updateBlogById = async (req, res) => {
 
     await blog.save();
 
-    res.status(200).send({
+    return res.status(200).send({
       status: true,
       message: "Blog updated successfully",
       updateData: blog,
@@ -261,39 +261,39 @@ const deleteBlogById = async (req, res) => {
 
     // console.log( 'coverImg', blog.sections );
 
-    const directory = 'public/uploads/blogImages';
+    // const directory = 'public/uploads/blogImages';
 
-    fs.readdir(directory, (err, files) => {
-      if(err) {
-        console.log(err);
-      }
+    // fs.readdir(directory, (err, files) => {
+    //   if(err) {
+    //     console.log(err);
+    //   }
 
-      let arr = [];
+    //   let arr = [];
 
-      for (let i=0; i<blog.sections.length; i++) {
-        let str2 = blog.sections[i].imgUrl;
-        arr.push(str2.slice(12));
-      }
+    //   for (let i=0; i<blog.sections.length; i++) {
+    //     let str2 = blog.sections[i].imgUrl;
+    //     arr.push(str2.slice(12));
+    //   }
 
-      for (let file of files) {
-        let str1 = blog.coverImg.slice(12);
+    //   for (let file of files) {
+    //     let str1 = blog.coverImg.slice(12);
       
-        let imgArr = [];
-        if (str1 === file) {
-          imgArr.push(str1);
-        }
+    //     let imgArr = [];
+    //     if (str1 === file) {
+    //       imgArr.push(str1);
+    //     }
 
-        let arr1 = [...imgArr, ...arr];
+    //     let arr1 = [...imgArr, ...arr];
         
-        if ( arr1.includes(file) ) {
-          fs.unlink(path.join(directory, file), (err) => {
-            if(err) {
-              console.log(err);
-            };
-          })
-        }
-      }
-    })
+    //     if ( arr1.includes(file) ) {
+    //       fs.unlink(path.join(directory, file), (err) => {
+    //         if(err) {
+    //           console.log(err);
+    //         };
+    //       })
+    //     }
+    //   }
+    // })
 
     let deleteBlog = await blogModel.deleteOne({
       _id: blogId,
@@ -306,7 +306,7 @@ const deleteBlogById = async (req, res) => {
         .send({ status: false, message: "Blog not found or already deleted" });
     }
 
-    res
+    return res
       .status(200)
       .send({ status: true, message: "Blog deleted successfully" });
   } catch (error) {
@@ -319,6 +319,6 @@ module.exports = {
   getBlogs,
   getBlogById,
   updateBlogById,
-  deleteBlogById,
-  getBlogByParams
+  getBlogByParams,
+  deleteBlogById
 };

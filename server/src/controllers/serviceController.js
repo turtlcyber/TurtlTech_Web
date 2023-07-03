@@ -40,7 +40,7 @@ const addService = async (req, res) => {
 
     let createService = await serviceModel.create(serviceData);
 
-    res.status(201).send({
+    return res.status(201).send({
       status: true,
       message: "Service section added",
       data: createService,
@@ -62,7 +62,7 @@ const getAllServices = async (req, res) => {
         .send({ status: false, message: "No service found" });
     }
 
-    res.status(200).send({ status: true, services: services });
+    return res.status(200).send({ status: true, services: services });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -108,7 +108,7 @@ const updateServiceSection = async (req, res) => {
 
     await data.save();
 
-    res.status(200).send({ status: true, message: "Section updated", data: data });
+    return res.status(200).send({ status: true, message: "Section updated", data: data });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -159,7 +159,7 @@ const deleteServiceSection = async (req, res) => {
       });
     }
 
-    res
+    return res
       .status(200)
       .send({ status: true, message: "Service section deleted successfully" });
   } catch (error) {

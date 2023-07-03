@@ -2,6 +2,7 @@ const userModel = require("../models/userModel");
 const adminModel = require("../models/adminModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { secretKey } = require('../middlewares/config');
 // const aurhorities = require("../actionType");
 const {
   isValidRequestBody,
@@ -125,13 +126,13 @@ const addUser = async function (req, res) {
 
     let addData = await userModel.create(userData);
     delete addData.password
-    res.status(201).send({
+    return res.status(201).send({
       status: true,
       message: "User added successfully",
       data: addData,
     });
   } catch (error) {
-    res.status(500).send({ status: false, message: error.message });
+    return res.status(500).send({ status: false, message: error.message });
   }
 };
 
@@ -202,7 +203,7 @@ const loginUser = async function (req, res) {
             Application: "turtltechbackend",
             Author: "nirajkumar",
           },
-          process.env.TOKEN_SECRET_KEY || "TURLTTECH*2023@Developers",
+          secretKey,
           { expiresIn: "24h" }
         );
         // res.setHeader("x-api-key", token);
@@ -401,19 +402,19 @@ const createUser = async function (req, res) {
 
       addData.password = "";
 
-      res.status(201).send({
+      return res.status(201).send({
         status: true,
         message: "User added successfully",
         data: addData,
       });
     } else {
-      res.status(403).send({
+      return res.status(403).send({
         status: false,
         message: "You are not authorize to add employees",
       });
     }
   } catch (error) {
-    res.status(500).send({ status: false, message: error.message });
+    return res.status(500).send({ status: false, message: error.message });
   }
 };
 
@@ -435,7 +436,7 @@ const getEmpDetailsWithSalary = async (req, res) => {
       });
     }
 
-    res.status(200).send({ status: true, employeesData: employees });
+    return res.status(200).send({ status: true, employeesData: employees });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -515,7 +516,7 @@ const updateUserById = async (req, res) => {
 
     await employee.save();
     employee.password = "";
-    res.status(200).send({
+    return res.status(200).send({
       status: true,
       message: "Employee data updated",
       data: employee,
@@ -560,7 +561,7 @@ const deleteUserById = async (req, res) => {
       });
     }
 
-    res
+    return res
       .status(200)
       .send({ status: true, message: "Employee deleted successfully" });
   } catch (error) {

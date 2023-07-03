@@ -32,9 +32,9 @@ const getAllFAQs = async (req, res) => {
   try {
     let faqs = await turtlFAQModel.find();
 
-    if (faqs.length === 0) {
-      return res.status(404).send({ status: false, message: "No FAQ found" });
-    }
+    // if (faqs.length === 0) {
+    //   return res.status(404).send({ status: false, message: "No FAQ found" });
+    // }
 
     return res.status(200).send({ status: true, data: faqs });
   } catch (error) {

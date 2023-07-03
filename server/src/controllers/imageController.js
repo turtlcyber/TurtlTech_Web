@@ -1,7 +1,5 @@
 const imageModel = require("../models/imageModel");
-const adminModel = require("../models/adminModel");
-const { upload } = require("../middlewares/ImageUpload");
-const { imageMV } = require("../middlewares/ImageUpload");
+const { uploadImage } = require('../controllers/firebaseImageController');
 const {
   isValid,
   isValidName,
@@ -10,20 +8,17 @@ const {
 } = require("../utils/utils");
 
 // UPLOAD IMAGE
-const uploadImage = async (req, res) => {
+const uploadImagefn = async (req, res) => {
   try {
-    let data = req.body;
-    let file = req.files;
-    
-    let { imgField } = data;
 
-    let imageData = { };
+    let { imgField } = req.body;
+    let {images} = req.files;
 
-    // certificateData.imgUrl = await imageMV(file.imgUrl, "certificateImg");
-
-    imageData.imageUrl = await imageMV(file.images, "Images");
-    imageData.imgField = imgField;
-
+    let img = await uploadImage(images);
+    let imageData = {
+      imageUrl:img.imageURL,
+      imgField:imgField
+     };
     let imagesData = await imageModel.create(imageData);
 
     return res
@@ -34,21 +29,19 @@ const uploadImage = async (req, res) => {
   }
 };
 
-
 // GET ALL IMAGES
 const getAllImages = async (req, res) => {
-    try {
-        let images = await imageModel.find().sort({"createdAt": -1});
+  try {
+    let images = await imageModel.find().sort({ createdAt: -1 });
 
-        if (images.length === 0) {
-            return res.status(404).send({ status: false, message: 'No image found'});
-        }
-
-        return res.status(200).send({ status: true, data: images })
-
-    } catch (error) {
-        return res.status(500).send({ status: false, message: error.message });
+    if (images.length === 0) {
+      return res.status(404).send({ status: false, message: "No image found" });
     }
-}
 
-module.exports = { uploadImage, getAllImages };
+    return res.status(200).send({ status: true, data: images });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+module.exports = { uploadImagefn, getAllImages };

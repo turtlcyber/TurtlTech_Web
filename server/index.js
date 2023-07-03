@@ -6,6 +6,7 @@ const route = require("./src/routes/routes.js");
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const passport = require('passport');
+const { port, mongoDbUrl } = require("./src/middlewares/config.js");
 
 
 
@@ -29,7 +30,7 @@ app.use("/", express.static('public/uploads'));
 
 mongoose
   .connect(
-    "mongodb+srv://dbuser:S%40ndy19891@cluster0.dl1os.mongodb.net/TurtlTech-DB",
+    mongoDbUrl,
     { useNewUrlParser: true }
   )
   .then(() => console.log("Connected with Database"))
@@ -41,8 +42,6 @@ app.get("/", (req, res) => {
   res.send("<h1>Welcome to TurtlTech</h1>");
 });
 
-const port = 4001;
-
-app.listen(process.env.PORT || port, () =>
-  console.log("App is running on port", process.env.PORT || port)
+app.listen(port, () =>
+  console.log("App is running on port", port)
 );

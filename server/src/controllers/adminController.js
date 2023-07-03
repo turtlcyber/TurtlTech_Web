@@ -1,6 +1,7 @@
 const adminModel = require("../models/adminModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { tokenSecretKey } = require('../middlewares/config');
 // const QRCode = require('qrcode');
 const {
   isValidRequestBody,
@@ -61,9 +62,9 @@ const createAdmin = async function (req, res) {
     }
     
     if (password.length < 8 || password.length > 15)
-      res.status(400).send({
+      return res.status(400).send({
         status: false,
-        message: "Password must in between 8 to 15 characters",
+        message: "Password must in between 12 to 25 characters",
       });
 
     if (!isValidPassword(password))
@@ -90,13 +91,13 @@ const createAdmin = async function (req, res) {
 
     // let createBusiness = await businessInfoModel.create(businessData);
 
-    res.status(201).send({
+    return res.status(201).send({
       status: true,
       message: "Admin created successfully",
       data: createData,
     });
   } catch (error) {
-    res.status(500).send({ status: false, message: error.message });
+    return res.status(500).send({ status: false, message: error.message });
   }
 };
 
@@ -147,10 +148,11 @@ const loginAdmin = async function (req, res) {
             Assignment: "turtltechbackend",
             Author: "nirajkumar",
           },
-          process.env.TOKEN_SECRET_KEY || "TURLTTECH*2023@Developers",
+          tokenSecretKey,
           { expiresIn: "24h" }
         );
         // res.setHeader("x-api-key", token);
+       
         res.setHeader("Authorization", "Bearer", token);
 
         return res.status(201).send({
@@ -161,7 +163,7 @@ const loginAdmin = async function (req, res) {
         });
       } else {
         // insert access denied code here
-        console.log("Access Denied!");
+        // console.log("Access Denied!");
         return res.status(401).send({
           status: false,
           message: "login denied ",
