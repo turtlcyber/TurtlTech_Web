@@ -122,11 +122,11 @@ const addTurtlInfo = async (req, res) => {
 const getTurtlInfo = async (req, res) => {
   try {
     let turtlInfo = await turtlInfoModel.find();
-    if (turtlInfo.length === 0) {
-      return res
-        .status(404)
-        .send({ status: false, message: "No turtl info found" });
-    }
+    // if (turtlInfo.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .send({ status: false, message: "No turtl info found" });
+    // }
 
     return res.status(200).send({ status: true, data: turtlInfo[0] });
   } catch (error) {

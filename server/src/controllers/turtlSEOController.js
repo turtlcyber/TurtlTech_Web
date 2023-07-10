@@ -45,11 +45,11 @@ const getAllSEO = async (req, res) => {
   try {
     let turtlseos = await turtlSEOModel.find();
 
-    if (turtlseos.length === 0) {
-      return res
-        .status(404)
-        .send({ status: false, message: "No SEO name found" });
-    }
+    // if (turtlseos.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .send({ status: false, message: "No SEO name found" });
+    // }
 
     return res.status(200).send({ status: true, data: turtlseos });
   } catch (error) {

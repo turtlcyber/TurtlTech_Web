@@ -31,9 +31,9 @@ const getAllEvents = async (req, res) => {
   try {
     let events = await eventModel.find();
 
-    if (events.length === 0) {
-      return res.status(404).send({ status: false, message: "No event found" });
-    }
+    // if (events.length === 0) {
+    //   return res.status(404).send({ status: false, message: "No event found" });
+    // }
 
     return res.status(200).send({ status: true, data: events });
   } catch (error) {

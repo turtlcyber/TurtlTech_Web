@@ -45,9 +45,9 @@ const getAllCertificates = async (req, res) => {
   try {
     let certificates = await certificateModel.find();
 
-    if (certificates.length === 0) {
-      return res.status(404).send({ status: false, message: 'No certificate found'});
-    }
+    // if (certificates.length === 0) {
+    //   return res.status(404).send({ status: false, message: 'No certificate found'});
+    // }
 
     return res.status(200).send({ status: true, data: certificates })
 

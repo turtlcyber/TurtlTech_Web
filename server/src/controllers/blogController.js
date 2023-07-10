@@ -119,9 +119,9 @@ const getBlogs = async (req, res) => {
   try {
     let blogs = await blogModel.find({ isPublished: true }).sort({ createdAt: 'desc' });
 
-    if (!blogs) {
-      return res.status(404).send({ status: false, message: "No blog found" });
-    }
+    // if (!blogs) {
+    //   return res.status(404).send({ status: false, message: "No blog found" });
+    // }
 
     return res.status(200).send({ status: true, blogs: blogs });
   } catch (error) {

@@ -56,11 +56,11 @@ const getAllServices = async (req, res) => {
   try {
     let services = await serviceModel.find();
 
-    if (!services.length) {
-      return res
-        .status(404)
-        .send({ status: false, message: "No service found" });
-    }
+    // if (!services.length) {
+    //   return res
+    //     .status(404)
+    //     .send({ status: false, message: "No service found" });
+    // }
 
     return res.status(200).send({ status: true, services: services });
   } catch (error) {

@@ -34,9 +34,9 @@ const getAllImages = async (req, res) => {
   try {
     let images = await imageModel.find().sort({ createdAt: -1 });
 
-    if (images.length === 0) {
-      return res.status(404).send({ status: false, message: "No image found" });
-    }
+    // if (images.length === 0) {
+    //   return res.status(404).send({ status: false, message: "No image found" });
+    // }
 
     return res.status(200).send({ status: true, data: images });
   } catch (error) {

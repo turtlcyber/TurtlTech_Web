@@ -107,7 +107,7 @@ router.get("/turtlseo/:pageName", turtlSEOController.getSEOByPageName);
 router.put("/turtlseo/:seoId", Authentication, turtlSEOController.updateTurtlSEOData);
 
 // CONTACT US API
-router.post("/contactus", Authentication, contactUsController.addContactUsDetails);
+router.post("/contactus", contactUsController.addContactUsDetails);
 
 // FAQ APIs
 router.post("/turtlfaq", Authentication, turtlFAQController.addFAQ);

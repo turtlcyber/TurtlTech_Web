@@ -6,8 +6,8 @@ const nodemailer = require("nodemailer");
 var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "sandeep.sid.kumar10@gmail.com",
-    pass: "gosmciadfnayqjfn",
+    user: "turtltechweb@gmail.com",
+    pass: "smtyjocjoesvochr",
   },
 });
 
@@ -15,7 +15,7 @@ const addContactUsDetails = async (req, res) => {
   try {
     let data = req.body;
 
-    let { name, email, subject, text } = data;
+    let { name, email, to, subject, text } = data;
 
     // setup e-mail data with unicode symbols
     let msg =
@@ -28,7 +28,7 @@ const addContactUsDetails = async (req, res) => {
       " </p>";
     var mailOptions = {
       from: `TurtlTech.com <${data.email}>`, // sender address
-      to: "n1r4jkumar@gmail.com", // list of receivers
+      to: data.to, // list of receivers
       subject: data.subject, // Subject line
       // text: msg, // plaintext body
       html: msg,

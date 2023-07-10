@@ -29,11 +29,11 @@ const getAllPageImages = async (req, res) => {
   try {
     let pageImages = await pageImageModel.find();
 
-    if (pageImages.length === 0) {
-      return res
-        .status(404)
-        .send({ status: false, message: "No page image found" });
-    }
+    // if (pageImages.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .send({ status: false, message: "No page image found" });
+    // }
 
     return res.status(200).send({ status: true, data: pageImages });
   } catch (error) {
